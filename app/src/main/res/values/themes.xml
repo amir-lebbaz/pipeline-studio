@@ -18,48 +18,51 @@
         <item name="fontFamily">@font/font_instrument_sans</item>
     </style>
 
+    <!-- Base Pipeline Text Appearance -->
+    <style name="TextAppearance.Pipeline" parent="" />
+
     <!-- Bespoke Text Styles -->
-    <style name="TextAppearance.Pipeline.HeroNumber">
+    <style name="TextAppearance.Pipeline.HeroNumber" parent="TextAppearance.Pipeline">
         <item name="android:textSize">@dimen/text_size_hero_num</item>
         <item name="android:textColor">@color/text_primary_dark</item>
         <item name="android:fontFamily">@font/font_ibm_plex_mono</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextAppearance.Pipeline.HeroLabel">
+    <style name="TextAppearance.Pipeline.HeroLabel" parent="TextAppearance.Pipeline">
         <item name="android:textSize">@dimen/text_size_secondary</item>
         <item name="android:textColor">@color/text_secondary_dark</item>
         <item name="android:fontFamily">@font/font_instrument_sans</item>
         <item name="android:letterSpacing">0.05</item>
     </style>
 
-    <style name="TextAppearance.Pipeline.StatNumber">
+    <style name="TextAppearance.Pipeline.StatNumber" parent="TextAppearance.Pipeline">
         <item name="android:textSize">@dimen/text_size_stat_num</item>
         <item name="android:textColor">@color/text_primary_light</item>
         <item name="android:fontFamily">@font/font_ibm_plex_mono</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextAppearance.Pipeline.StatLabel">
+    <style name="TextAppearance.Pipeline.StatLabel" parent="TextAppearance.Pipeline">
         <item name="android:textSize">@dimen/text_size_secondary</item>
         <item name="android:textColor">@color/text_secondary_light</item>
         <item name="android:fontFamily">@font/font_instrument_sans</item>
     </style>
 
-    <style name="TextAppearance.Pipeline.SectionHeader">
+    <style name="TextAppearance.Pipeline.SectionHeader" parent="TextAppearance.Pipeline">
         <item name="android:textSize">@dimen/text_size_heading</item>
         <item name="android:textColor">@color/text_primary_light</item>
         <item name="android:fontFamily">@font/font_instrument_sans</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextAppearance.Pipeline.MonoCode">
+    <style name="TextAppearance.Pipeline.MonoCode" parent="TextAppearance.Pipeline">
         <item name="android:textSize">@dimen/text_size_mono_code</item>
         <item name="android:textColor">@color/text_primary_light</item>
         <item name="android:fontFamily">@font/font_ibm_plex_mono</item>
     </style>
 
-    <style name="TextAppearance.Pipeline.Badge">
+    <style name="TextAppearance.Pipeline.Badge" parent="TextAppearance.Pipeline">
         <item name="android:textSize">@dimen/text_size_badge</item>
         <item name="android:fontFamily">@font/font_ibm_plex_mono</item>
         <item name="android:textStyle">bold</item>
