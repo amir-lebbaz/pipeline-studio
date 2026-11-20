@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pipeline Studio</string>
+    <string name="app_subtitle">Architecture II · Laghouat</string>
+
+    <!-- Top Bar -->
+    <string name="lang_toggle">عربي</string>
+    <string name="lang_current">EN</string>
+
+    <!-- Hero Card Metrics -->
+    <string name="hero_title">Performance Overview</string>
+    <string name="metric_total_cycles">TOTAL CYCLES</string>
+    <string name="metric_speedup">SPEEDUP (S)</string>
+    <string name="stat_stages_label">Stages</string>
+    <string name="stat_stalls_label">Stalls (Bulles)</string>
+    <string name="stat_hazards_label">Hazards</string>
+
+    <!-- Assembly Editor Card -->
+    <string name="section_assembly_input">Assembly Program</string>
+    <string name="assembly_hint">; Enter x86 instructions e.g.:\nMOV RAX, [RBX]\nADD RAX, RCX\nJMP L</string>
+    <string name="pipeline_model_label">Pipeline Depth</string>
+    <string name="model_4_stage">4-Stage (F-D-E-WB)</string>
+    <string name="model_5_stage">5-Stage (IF-ID-EX-MEM-WB)</string>
+    <string name="hazard_resolution_label">Hazard Resolution</string>
+    <string name="mode_stalls_only">Stalls Only</string>
+    <string name="mode_forwarding">Forwarding</string>
+    <string name="mode_reordering">Reordering</string>
+    <string name="btn_simulate">Simulate Pipeline</string>
+    <string name="btn_clear">Clear</string>
+
+    <!-- Presets Strip -->
+    <string name="section_presets">Course Examples</string>
+    <string name="preset_td4_ex6">TD4 Ex6 (RAW)</string>
+    <string name="preset_slide29">Slide 29 (RAW &amp; Reorder)</string>
+    <string name="preset_branch">Branch Flush</string>
+    <string name="preset_4stage_basic">4-Stage Basic</string>
+
+    <!-- Pipeline Chronogram -->
+    <string name="section_chronogram">Pipeline Chronogram</string>
+    <string name="chronogram_hint">Scroll horizontally to inspect cycle-by-cycle execution</string>
+    <string name="inst_column_header">Inst</string>
+    <string name="cycle_prefix">CC</string>
+    <string name="stall_bulle">Bulle</string>
+
+    <!-- Hazard Report -->
+    <string name="section_hazards">Hazard Analysis &amp; Diagnostics</string>
+    <string name="no_hazards_detected">Zero hazards detected. Ideal pipeline flow achieved.</string>
+    <string name="hazard_raw_title">Data Hazard (RAW)</string>
+    <string name="hazard_control_title">Control Hazard (Branch)</string>
+    <string name="hazard_structural_title">Structural Hazard</string>
+    <string name="hazard_affected_register">Affected Register: %1$s</string>
+    <string name="hazard_between_instructions">Between %1$s and %2$s</string>
+    <string name="hazard_stalls_penalty">Penalty: %1$d Stalls (Bulles)</string>
+    <string name="hazard_forwarding_saved">Forwarding saved: %1$d cycles</string>
+    <string name="reordering_applied_title">Instruction Reordering Applied</string>
+    <string name="reordering_applied_desc">Independent instruction %1$s moved ahead to eliminate pipeline stall.</string>
+</resources>

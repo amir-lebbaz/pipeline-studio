@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Bento Geometries -->
+    <dimen name="radius_bento_card">24dp</dimen>
+    <dimen name="radius_stat_tile">16dp</dimen>
+    <dimen name="radius_pill">999dp</dimen>
+    <dimen name="radius_badge">6dp</dimen>
+    <dimen name="stroke_hairline">1dp</dimen>
+
+    <!-- Spacing & Gaps -->
+    <dimen name="screen_padding">16dp</dimen>
+    <dimen name="bento_gap">12dp</dimen>
+    <dimen name="card_internal_padding">16dp</dimen>
+    <dimen name="stat_tile_padding">12dp</dimen>
+    <dimen name="pill_horizontal_padding">14dp</dimen>
+    <dimen name="pill_vertical_padding">8dp</dimen>
+
+    <!-- Typography Scales -->
+    <dimen name="text_size_hero_num">32sp</dimen>
+    <dimen name="text_size_stat_num">20sp</dimen>
+    <dimen name="text_size_heading">18sp</dimen>
+    <dimen name="text_size_body">14sp</dimen>
+    <dimen name="text_size_secondary">12sp</dimen>
+    <dimen name="text_size_badge">11sp</dimen>
+    <dimen name="text_size_mono_code">13sp</dimen>
+
+    <!-- Chronogram Cell Metrics -->
+    <dimen name="chrono_cell_width">52dp</dimen>
+    <dimen name="chrono_cell_height">34dp</dimen>
+    <dimen name="chrono_cell_gap">4dp</dimen>
+    <dimen name="chrono_header_height">28dp</dimen>
+</resources>

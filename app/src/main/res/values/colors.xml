@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Ghostly Fog Palette Core Tokens -->
+    <color name="midnight_ink">#242D36</color>
+    <color name="stormy_slate">#536372</color>
+    <color name="eerie_sage">#899C96</color>
+    <color name="silver_fog">#BBC5C5</color>
+    <color name="spectral_white">#EDF0E9</color>
+    <color name="surface_white">#FFFFFF</color>
+
+    <!-- Translucent Hairline Borders & Overlays (Strictly Ghostly Fog derived) -->
+    <color name="border_hairline">#BBC5C5</color>
+    <color name="divider_dark">#36434F</color>
+    <color name="divider_light">#E0E5DD</color>
+
+    <!-- Pipeline Stage Discrete Shades (Strict Ghostly Fog Palette) -->
+    <color name="stage_fetch">#242D36</color>       <!-- Midnight Ink -->
+    <color name="stage_decode">#536372</color>      <!-- Stormy Slate -->
+    <color name="stage_execute">#384752</color>     <!-- Deep Slate Tint -->
+    <color name="stage_memory">#6B7D82</color>      <!-- Sage Slate Tint -->
+    <color name="stage_writeback">#899C96</color>   <!-- Eerie Sage -->
+    <color name="stage_stall_bg">#E2E7DF</color>    <!-- Spectral Fog -->
+    <color name="stage_stall_border">#BBC5C5</color><!-- Silver Fog -->
+    <color name="stage_stall_text">#536372</color>  <!-- Stormy Slate -->
+
+    <!-- Text Color Semantics -->
+    <color name="text_primary_light">#242D36</color>
+    <color name="text_secondary_light">#536372</color>
+    <color name="text_primary_dark">#EDF0E9</color>
+    <color name="text_secondary_dark">#BBC5C5</color>
+    <color name="text_accent">#899C96</color>
+</resources>

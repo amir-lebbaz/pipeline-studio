@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">استوديو الأنابيب</string>
+    <string name="app_subtitle">معمارية الحاسوب 2 · جامعة الأغواط</string>
+
+    <!-- Top Bar -->
+    <string name="lang_toggle">EN</string>
+    <string name="lang_current">AR</string>
+
+    <!-- Hero Card Metrics -->
+    <string name="hero_title">نظرة عامة على الأداء</string>
+    <string name="metric_total_cycles">إجمالي الدورات</string>
+    <string name="metric_speedup">التسريع (S)</string>
+    <string name="stat_stages_label">المراحل</string>
+    <string name="stat_stalls_label">الفقاعات (Stalls)</string>
+    <string name="stat_hazards_label">المخاطر</string>
+
+    <!-- Assembly Editor Card -->
+    <string name="section_assembly_input">برنامج الأسمبلي</string>
+    <string name="assembly_hint">; أدخل تعليمات x86 مثال:\nMOV RAX, [RBX]\nADD RAX, RCX\nJMP L</string>
+    <string name="pipeline_model_label">عمق الأنبوب (Model)</string>
+    <string name="model_4_stage">4 مراحل (F-D-E-WB)</string>
+    <string name="model_5_stage">5 مراحل (IF-ID-EX-MEM-WB)</string>
+    <string name="hazard_resolution_label">معالجة المخاطر (Résolution)</string>
+    <string name="mode_stalls_only">تعطيل فقط (Stalls)</string>
+    <string name="mode_forwarding">تمرير (Forwarding)</string>
+    <string name="mode_reordering">إعادة الترتيب</string>
+    <string name="btn_simulate">محاكاة الأنبوب</string>
+    <string name="btn_clear">مسح</string>
+
+    <!-- Presets Strip -->
+    <string name="section_presets">أمثلة المقرر والتمارين</string>
+    <string name="preset_td4_ex6">TD4 تمرين 6 (RAW)</string>
+    <string name="preset_slide29">سلايد 29 (RAW وإعادة ترتيب)</string>
+    <string name="preset_branch">تفريغ القفز (Branch)</string>
+    <string name="preset_4stage_basic">4 مراحل أساسي</string>
+
+    <!-- Pipeline Chronogram -->
+    <string name="section_chronogram">المخطط الزمني للأنبوب</string>
+    <string name="chronogram_hint">اسحب أفقياً لمعاينة تنفيذ المراحل دورة بدورة</string>
+    <string name="inst_column_header">التعليمة</string>
+    <string name="cycle_prefix">CC</string>
+    <string name="stall_bulle">Bulle</string>
+
+    <!-- Hazard Report -->
+    <string name="section_hazards">تشخيص وتحليل المخاطر (Aléas)</string>
+    <string name="no_hazards_detected">لم يتم رصد أي مخاطر. تدفق الأنبوب مثالي 100%.</string>
+    <string name="hazard_raw_title">خطر بيانات (RAW / Dépendance)</string>
+    <string name="hazard_control_title">خطر تحكم (قفز / Rupture)</string>
+    <string name="hazard_structural_title">خطر بنية (تعارض موارد)</string>
+    <string name="hazard_affected_register">السجل المعني: %1$s</string>
+    <string name="hazard_between_instructions">بين التعليمة %1$s و %2$s</string>
+    <string name="hazard_stalls_penalty">الضريبة: %1$d فقاعة (Stalls)</string>
+    <string name="hazard_forwarding_saved">التمرير وفّر: %1$d دورة</string>
+    <string name="reordering_applied_title">تم تطبيق إعادة الترتيب (Réordonnancement)</string>
+    <string name="reordering_applied_desc">تم تقديم التعليمة المستقلة %1$s لتفادي تعطيل الأنبوب تماماً.</string>
+</resources>

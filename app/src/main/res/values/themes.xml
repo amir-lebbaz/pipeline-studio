@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.PipelineStudio" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Palette Colors -->
+        <item name="colorPrimary">@color/midnight_ink</item>
+        <item name="colorPrimaryVariant">@color/midnight_ink</item>
+        <item name="colorOnPrimary">@color/spectral_white</item>
+        <item name="colorSecondary">@color/eerie_sage</item>
+        <item name="colorSecondaryVariant">@color/stormy_slate</item>
+        <item name="colorOnSecondary">@color/midnight_ink</item>
+
+        <!-- Window Canvas & Status Bar -->
+        <item name="android:windowBackground">@color/spectral_white</item>
+        <item name="android:statusBarColor">@color/spectral_white</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+
+        <!-- Default Font Family -->
+        <item name="fontFamily">@font/font_instrument_sans</item>
+    </style>
+
+    <!-- Bespoke Text Styles -->
+    <style name="TextAppearance.Pipeline.HeroNumber">
+        <item name="android:textSize">@dimen/text_size_hero_num</item>
+        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:fontFamily">@font/font_ibm_plex_mono</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Pipeline.HeroLabel">
+        <item name="android:textSize">@dimen/text_size_secondary</item>
+        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:fontFamily">@font/font_instrument_sans</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+
+    <style name="TextAppearance.Pipeline.StatNumber">
+        <item name="android:textSize">@dimen/text_size_stat_num</item>
+        <item name="android:textColor">@color/text_primary_light</item>
+        <item name="android:fontFamily">@font/font_ibm_plex_mono</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Pipeline.StatLabel">
+        <item name="android:textSize">@dimen/text_size_secondary</item>
+        <item name="android:textColor">@color/text_secondary_light</item>
+        <item name="android:fontFamily">@font/font_instrument_sans</item>
+    </style>
+
+    <style name="TextAppearance.Pipeline.SectionHeader">
+        <item name="android:textSize">@dimen/text_size_heading</item>
+        <item name="android:textColor">@color/text_primary_light</item>
+        <item name="android:fontFamily">@font/font_instrument_sans</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Pipeline.MonoCode">
+        <item name="android:textSize">@dimen/text_size_mono_code</item>
+        <item name="android:textColor">@color/text_primary_light</item>
+        <item name="android:fontFamily">@font/font_ibm_plex_mono</item>
+    </style>
+
+    <style name="TextAppearance.Pipeline.Badge">
+        <item name="android:textSize">@dimen/text_size_badge</item>
+        <item name="android:fontFamily">@font/font_ibm_plex_mono</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

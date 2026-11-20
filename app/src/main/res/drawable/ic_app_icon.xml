@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Midnight Ink Background with 24dp rounded geometry -->
+    <path
+        android:fillColor="#242D36"
+        android:pathData="M16,0h76a16,16 0 0,1 16,16v76a16,16 0 0,1 -16,16h-76a16,16 0 0,1 -16,-16v-76a16,16 0 0,1 16,-16z" />
+    <!-- 4 Pipeline Stage Stepped Rectangles in Ghostly Fog -->
+    <!-- Stage 1: F -->
+    <path
+        android:fillColor="#899C96"
+        android:pathData="M24,28h18v16h-18z" />
+    <!-- Stage 2: D -->
+    <path
+        android:fillColor="#BBC5C5"
+        android:pathData="M38,42h18v16h-18z" />
+    <!-- Stage 3: E -->
+    <path
+        android:fillColor="#536372"
+        android:pathData="M52,56h18v16h-18z" />
+    <!-- Stage 4: WB -->
+    <path
+        android:fillColor="#EDF0E9"
+        android:pathData="M66,70h18v16h-18z" />
+</vector>

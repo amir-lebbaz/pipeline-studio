@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/spectral_white"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_padding">
+
+        <!-- Top App Bar: App Title & Compact Language Toggle -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvAppTitle"
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tvAppSubtitle"
+                    style="@style/TextAppearance.Pipeline.HeroLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_subtitle"
+                    android:textColor="@color/stormy_slate"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Language Pill Toggle -->
+            <TextView
+                android:id="@+id/btnLangToggle"
+                style="@style/TextAppearance.Pipeline.Badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_pill_inactive"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="@dimen/pill_horizontal_padding"
+                android:paddingTop="@dimen/pill_vertical_padding"
+                android:paddingEnd="@dimen/pill_horizontal_padding"
+                android:paddingBottom="@dimen/pill_vertical_padding"
+                android:text="@string/lang_toggle"
+                android:textColor="@color/midnight_ink" />
+        </LinearLayout>
+
+        <!-- 1. Hero Performance Card (#242D36, 24dp radius) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/bento_gap"
+            android:background="@drawable/bg_bento_dark"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Hero Header -->
+            <TextView
+                style="@style/TextAppearance.Pipeline.HeroLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hero_title"
+                android:textColor="@color/silver_fog" />
+
+            <!-- Metrics Row: Total Cycles & Speedup -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextAppearance.Pipeline.HeroLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/metric_total_cycles" />
+
+                    <TextView
+                        android:id="@+id/tvTotalCycles"
+                        style="@style/TextAppearance.Pipeline.HeroNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="00" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextAppearance.Pipeline.HeroLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/metric_speedup" />
+
+                    <TextView
+                        android:id="@+id/tvSpeedup"
+                        style="@style/TextAppearance.Pipeline.HeroNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1.00x"
+                        android:textColor="@color/eerie_sage" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Hairline Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@color/divider_dark" />
+
+            <!-- 3 Inner Stat Tiles (#EDF0E9, 16dp radius) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Tile 1: Stages -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_stat_tile"
+                    android:orientation="vertical"
+                    android:padding="@dimen/stat_tile_padding">
+
+                    <TextView
+                        style="@style/TextAppearance.Pipeline.StatLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stat_stages_label" />
+
+                    <TextView
+                        android:id="@+id/tvStatStages"
+                        style="@style/TextAppearance.Pipeline.StatNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="5" />
+                </LinearLayout>
+
+                <!-- Tile 2: Stalls -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_stat_tile"
+                    android:orientation="vertical"
+                    android:padding="@dimen/stat_tile_padding">
+
+                    <TextView
+                        style="@style/TextAppearance.Pipeline.StatLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stat_stalls_label" />
+
+                    <TextView
+                        android:id="@+id/tvStatStalls"
+                        style="@style/TextAppearance.Pipeline.StatNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="00" />
+                </LinearLayout>
+
+                <!-- Tile 3: Hazards -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_stat_tile"
+                    android:orientation="vertical"
+                    android:padding="@dimen/stat_tile_padding">
+
+                    <TextView
+                        style="@style/TextAppearance.Pipeline.StatLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stat_hazards_label" />
+
+                    <TextView
+                        android:id="@+id/tvStatHazards"
+                        style="@style/TextAppearance.Pipeline.StatNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="00" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 2. Assembly Input & Controls Card (#FFFFFF, 24dp radius, 1dp border) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/bento_gap"
+            android:background="@drawable/bg_bento_light"
+            android:orientation="vertical"
+            android:padding="@dimen/card_internal_padding">
+
+            <TextView
+                style="@style/TextAppearance.Pipeline.SectionHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/section_assembly_input" />
+
+            <!-- Code Editor Frame (Technical LTR Lock) -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_code_editor"
+                android:padding="12dp">
+
+                <EditText
+                    android:id="@+id/etAssemblyCode"
+                    style="@style/TextAppearance.Pipeline.MonoCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:gravity="top|start"
+                    android:hint="@string/assembly_hint"
+                    android:importantForAutofill="no"
+                    android:inputType="textMultiLine|textNoSuggestions"
+                    android:minLines="4"
+                    android:textDirection="ltr" />
+            </FrameLayout>
+
+            <!-- Pipeline Model Segmented Switch (Moved here per Adjustment 2) -->
+            <TextView
+                style="@style/TextAppearance.Pipeline.StatLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/pipeline_model_label" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btnModel4Stage"
+                    style="@style/TextAppearance.Pipeline.Badge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_pill_inactive"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/model_4_stage"
+                    android:textColor="@color/midnight_ink" />
+
+                <TextView
+                    android:id="@+id/btnModel5Stage"
+                    style="@style/TextAppearance.Pipeline.Badge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_pill_active"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/model_5_stage"
+                    android:textColor="@color/spectral_white" />
+            </LinearLayout>
+
+            <!-- Hazard Resolution Mode Segmented Switch -->
+            <TextView
+                style="@style/TextAppearance.Pipeline.StatLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/hazard_resolution_label" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btnModeStalls"
+                    style="@style/TextAppearance.Pipeline.Badge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="3dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_pill_active"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/mode_stalls_only"
+                    android:textColor="@color/spectral_white" />
+
+                <TextView
+                    android:id="@+id/btnModeForwarding"
+                    style="@style/TextAppearance.Pipeline.Badge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_pill_inactive"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/mode_forwarding"
+                    android:textColor="@color/midnight_ink" />
+
+                <TextView
+                    android:id="@+id/btnModeReordering"
+                    style="@style/TextAppearance.Pipeline.Badge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_pill_inactive"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/mode_reordering"
+                    android:textColor="@color/midnight_ink" />
+            </LinearLayout>
+
+            <!-- Action Buttons: Simulate CTA + Clear -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btnSimulate"
+                    style="@style/TextAppearance.Pipeline.Badge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/bg_pill_active"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:text="@string/btn_simulate"
+                    android:textColor="@color/spectral_white"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/btnClear"
+                    style="@style/TextAppearance.Pipeline.Badge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_pill_inactive"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:text="@string/btn_clear"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 3. Course Examples Presets Strip -->
+        <TextView
+            style="@style/TextAppearance.Pipeline.StatLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="@string/section_presets" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/bento_gap"
+            android:overScrollMode="never"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Preset 1: TD4 Ex6 (Dashed border) -->
+                <TextView
+                    android:id="@+id/presetTd4"
+                    style="@style/TextAppearance.Pipeline.Badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_preset_dashed"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingStart="14dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/preset_td4_ex6"
+                    android:textColor="@color/midnight_ink" />
+
+                <!-- Preset 2: Slide 29 -->
+                <TextView
+                    android:id="@+id/presetSlide29"
+                    style="@style/TextAppearance.Pipeline.Badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_preset_chip"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingStart="14dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/preset_slide29"
+                    android:textColor="@color/spectral_white" />
+
+                <!-- Preset 3: Branch Penalty -->
+                <TextView
+                    android:id="@+id/presetBranch"
+                    style="@style/TextAppearance.Pipeline.Badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_preset_chip"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingStart="14dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/preset_branch"
+                    android:textColor="@color/spectral_white" />
+
+                <!-- Preset 4: 4-Stage Basic -->
+                <TextView
+                    android:id="@+id/preset4Stage"
+                    style="@style/TextAppearance.Pipeline.Badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_preset_chip"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingStart="14dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/preset_4stage_basic"
+                    android:textColor="@color/spectral_white" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- 4. Pipeline Chronogram Grid Card (#FFFFFF, 24dp radius) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/bento_gap"
+            android:background="@drawable/bg_bento_light"
+            android:orientation="vertical"
+            android:padding="@dimen/card_internal_padding">
+
+            <TextView
+                style="@style/TextAppearance.Pipeline.SectionHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/section_chronogram" />
+
+            <TextView
+                style="@style/TextAppearance.Pipeline.HeroLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/chronogram_hint"
+                android:textColor="@color/stormy_slate" />
+
+            <!-- Chronogram Scroll Container (Strict LTR Lock) -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layoutDirection="ltr"
+                android:overScrollMode="never"
+                android:scrollbars="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/llChronogramGrid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="ltr"
+                    android:orientation="vertical" />
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <!-- 5. Hazard Diagnostic Card (#FFFFFF, 24dp radius) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/bg_bento_light"
+            android:orientation="vertical"
+            android:padding="@dimen/card_internal_padding">
+
+            <TextView
+                style="@style/TextAppearance.Pipeline.SectionHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/section_hazards" />
+
+            <LinearLayout
+                android:id="@+id/llHazardList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
