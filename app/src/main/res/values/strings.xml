@@ -28,6 +28,9 @@
     <string name="mode_stalls_only">Stalls Only</string>
     <string name="mode_forwarding">Forwarding</string>
     <string name="mode_reordering">Reordering</string>
+    <string name="memory_architecture_label">Memory Architecture</string>
+    <string name="mem_harvard">Harvard (I/D Cache)</string>
+    <string name="mem_unified">Unified Memory</string>
     <string name="btn_simulate">Simulate Pipeline</string>
     <string name="btn_clear">Clear</string>
 
@@ -37,6 +40,7 @@
     <string name="preset_slide29">Slide 29 (RAW &amp; Reorder)</string>
     <string name="preset_branch">Branch Flush</string>
     <string name="preset_4stage_basic">4-Stage Basic</string>
+    <string name="preset_all_hazards">All Hazards Demo</string>
 
     <!-- Pipeline Chronogram -->
     <string name="section_chronogram">Pipeline Chronogram</string>
@@ -54,6 +58,9 @@
     <string name="hazard_control_title">Control Hazard (Branch)</string>
     <string name="hazard_structural_title">Structural Hazard</string>
     <string name="badge_in_order_safe">In-Order Safe (0 Stalls)</string>
+    <string name="badge_structural_stall">+1 Structural Stall</string>
+    <string name="badge_advisory_zero">Advisory (0 Stalls)</string>
+    <string name="hazard_solution_label">Solution: </string>
     <string name="hazard_affected_register">Affected Register: %1$s</string>
     <string name="hazard_between_instructions">Between %1$s and %2$s</string>
     <string name="hazard_stalls_penalty">Penalty: %1$d Stalls (Bulles)</string>

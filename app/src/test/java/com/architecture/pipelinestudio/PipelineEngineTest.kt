@@ -191,4 +191,99 @@ class PipelineEngineTest {
         assertEquals("RAX/EAX/AX/AL", wawHazards[0].registerFamily)
         assertEquals(0, wawHazards[0].stallCycles) // 0 stalls in an in-order pipeline
     }
+
+    @Test
+    fun testStructuralHazard_UnifiedVsHarvard() {
+        // I1 performs a memory load; I4 fetches at cycle 4.
+        val code = """
+            MOV RAX, [RBX]
+            MOV R8, 1
+            MOV R9, 2
+            MOV R10, 3
+        """.trimIndent()
+
+        val instructions = Parser.parse(code)
+        assertEquals(4, instructions.size)
+        assertTrue(instructions[0].usesDataMemory)
+
+        // 1. Unified Memory (Von Neumann single-port) -> Structural hazard
+        val unifiedResult = PipelineSimulator.simulate(
+            instructions,
+            PipelineModel.FIVE_STAGE,
+            HazardMode.STALLS_ONLY,
+            unifiedMemory = true
+        )
+        val structuralHazards = unifiedResult.hazards.filter { it.type == HazardType.STRUCTURAL }
+        assertEquals(1, structuralHazards.size)
+        assertEquals(1, structuralHazards[0].stallCycles)
+        assertEquals(1, structuralHazards[0].sourceInstruction.id)
+        assertEquals(4, structuralHazards[0].targetInstruction.id)
+        assertTrue(unifiedResult.totalStalls >= 1)
+
+        // 2. Harvard Architecture (Separate I/D Caches) -> 0 structural stalls
+        val harvardResult = PipelineSimulator.simulate(
+            instructions,
+            PipelineModel.FIVE_STAGE,
+            HazardMode.STALLS_ONLY,
+            unifiedMemory = false
+        )
+        val harvardStructural = harvardResult.hazards.filter { it.type == HazardType.STRUCTURAL }
+        assertEquals(0, harvardStructural.size)
+        assertEquals(0, harvardResult.totalStalls)
+    }
+
+    @Test
+    fun testControlHazard_TerminalBranch() {
+        val code = """
+            MOV AX, 1
+            JMP L
+        """.trimIndent()
+
+        val instructions = Parser.parse(code)
+        val result = PipelineSimulator.simulate(
+            instructions,
+            PipelineModel.FIVE_STAGE,
+            HazardMode.STALLS_ONLY
+        )
+
+        val branchHazards = result.hazards.filter { it.type == HazardType.CONTROL_BRANCH }
+        assertEquals(1, branchHazards.size)
+        assertEquals(0, branchHazards[0].stallCycles) // Advisory terminal branch
+        assertTrue(branchHazards[0].solutionEn.isNotEmpty())
+        assertTrue(branchHazards[0].solutionAr.isNotEmpty())
+    }
+
+    @Test
+    fun testAllHazardsDemo_DetectsAllFiveHazards() {
+        val code = """
+            MOV RAX, [RBX]
+            ADD RAX, RCX
+            MOV RDX, RAX
+            MOV RCX, 5
+            MOV RAX, 10
+            JMP L
+        """.trimIndent()
+
+        val instructions = Parser.parse(code)
+        val result = PipelineSimulator.simulate(
+            instructions,
+            PipelineModel.FIVE_STAGE,
+            HazardMode.STALLS_ONLY,
+            unifiedMemory = true
+        )
+
+        val types = result.hazards.map { it.type }.toSet()
+        assertTrue("RAW must be detected", types.contains(HazardType.RAW_DATA))
+        assertTrue("WAR must be detected", types.contains(HazardType.WAR_DATA))
+        assertTrue("WAW must be detected", types.contains(HazardType.WAW_DATA))
+        assertTrue("CONTROL must be detected", types.contains(HazardType.CONTROL_BRANCH))
+        assertTrue("STRUCTURAL must be detected", types.contains(HazardType.STRUCTURAL))
+        assertEquals(5, types.size)
+
+        // Ensure all hazards have academic solutions provided in both languages
+        for (hazard in result.hazards) {
+            assertTrue("solutionEn must not be blank for ${hazard.type}", hazard.solutionEn.isNotBlank())
+            assertTrue("solutionAr must not be blank for ${hazard.type}", hazard.solutionAr.isNotBlank())
+        }
+    }
 }

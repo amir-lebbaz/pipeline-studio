@@ -28,6 +28,9 @@
     <string name="mode_stalls_only">تجميد فقط (Stalls)</string>
     <string name="mode_forwarding">استباق وتمرير (Forwarding)</string>
     <string name="mode_reordering">إعادة الترتيب (Reordering)</string>
+    <string name="memory_architecture_label">معمارية الذاكرة</string>
+    <string name="mem_harvard">هارفارد (فصل الكاش)</string>
+    <string name="mem_unified">ذاكرة موحدة (Von Neumann)</string>
     <string name="btn_simulate">محاكاة الأنبوب</string>
     <string name="btn_clear">مسح</string>
 
@@ -37,6 +40,7 @@
     <string name="preset_slide29">الشريحة 29 (RAW وإعادة ترتيب)</string>
     <string name="preset_branch">تفريغ القفز (Branch)</string>
     <string name="preset_4stage_basic">4 مراحل أساسي</string>
+    <string name="preset_all_hazards">عرض جميع الهازرد (5 حالات)</string>
 
     <!-- Pipeline Chronogram -->
     <string name="section_chronogram">المخطط الزمني للأنبوب (Chronogram)</string>
@@ -54,6 +58,9 @@
     <string name="hazard_control_title">خطر تحكم وقَفز (Branch)</string>
     <string name="hazard_structural_title">خطر هيكلي (مادي)</string>
     <string name="badge_in_order_safe">محمي بالتسلسل (0 تأخير)</string>
+    <string name="badge_structural_stall">+1 تأخير هيكلي</string>
+    <string name="badge_advisory_zero">تنبيه (0 تأخير)</string>
+    <string name="hazard_solution_label">الحل: </string>
     <string name="hazard_affected_register">السجل المتأثر: %1$s</string>
     <string name="hazard_between_instructions">بين التعليمة %1$s و %2$s</string>
     <string name="hazard_stalls_penalty">العقوبة: %1$d دورات تجميد (فقاعات)</string>

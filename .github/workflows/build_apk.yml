@@ -61,9 +61,12 @@ jobs:
             - **[Download PipelineStudio-v1.1.apk](https://github.com/amir-lebbaz/pipeline-studio/releases/download/v1.1/PipelineStudio-v1.1.apk)**
 
             ### What's New in v1.1
-            - **Dedicated Theory & Hazards Guide**: Full academic reference covering all pipeline hazard types (RAW, WAR, WAW, Control, Structural) and resolution methods (Stalls, Forwarding, Reordering, Branch Prediction).
+            - **All 5 Hazard Types Detected**: Complete detection, chronogram scheduling, and diagnosis for RAW, WAR, WAW, Control (Branch), and Structural hazards.
+            - **Memory Architecture Toggle**: Segmented switch between Harvard Architecture (separate I/D Caches, 0 structural stalls) and Unified Memory (Von Neumann single-port bus collision).
+            - **Academic Solutions for Every Hazard**: 4-line diagnostic cards explaining root causes, cycle impacts, and university-standard resolutions (Forwarding, Reordering, Register Renaming, BTB, Harvard caches).
+            - **All Hazards Demo Preset**: Instant one-click preset loading a real instruction sequence triggering all 5 hazards.
+            - **Dedicated Theory & Hazards Guide**: Full academic reference covering all pipeline hazard types and resolution methods.
             - **Developer Profile Screen**: Dedicated About page for Amir Lebbaz, university context, and open-source references.
-            - **Complete Hazard Detection**: Active diagnosis and badge reporting for WAR (Anti-dependency) and WAW (Output dependency) alongside RAW and branch penalties.
             - **Enhanced Navigation**: Seamless Bento header pills to jump between Simulator, Theory, and About with full Arabic and English RTL/LTR support.
           files: release-assets/PipelineStudio-v1.1.apk
           draft: false

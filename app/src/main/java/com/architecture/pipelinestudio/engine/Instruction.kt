@@ -14,6 +14,8 @@ data class Instruction(
     val isMemoryStore: Boolean = false,
     val isNop: Boolean = false
 ) {
+    val usesDataMemory: Boolean get() = isMemoryLoad || isMemoryStore
+
     /**
      * Checks if this instruction has a RAW (Read-After-Write) data dependency
      * on an earlier instruction [producer].

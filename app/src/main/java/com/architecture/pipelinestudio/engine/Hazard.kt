@@ -16,5 +16,7 @@ data class Hazard(
     val stallCycles: Int,
     val forwardingSaves: Int = 0,
     val descriptionEn: String,
-    val descriptionAr: String
+    val descriptionAr: String,
+    val solutionEn: String = "",
+    val solutionAr: String = ""
 )

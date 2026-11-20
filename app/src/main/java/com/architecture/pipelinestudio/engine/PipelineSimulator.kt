@@ -14,6 +14,7 @@ data class InstructionSchedule(
 data class SimulationResult(
     val model: PipelineModel,
     val hazardMode: HazardMode,
+    val unifiedMemory: Boolean = false,
     val totalCycles: Int,
     val unpipelinedCycles: Int,
     val speedup: Double,
@@ -31,12 +32,14 @@ object PipelineSimulator {
     fun simulate(
         rawInstructions: List<Instruction>,
         model: PipelineModel,
-        hazardMode: HazardMode
+        hazardMode: HazardMode,
+        unifiedMemory: Boolean = false
     ): SimulationResult {
         if (rawInstructions.isEmpty()) {
             return SimulationResult(
                 model = model,
                 hazardMode = hazardMode,
+                unifiedMemory = unifiedMemory,
                 totalCycles = 0,
                 unpipelinedCycles = 0,
                 speedup = 1.0,
@@ -64,7 +67,7 @@ object PipelineSimulator {
         return if (model == PipelineModel.FOUR_STAGE) {
             simulate4Stage(activeInstructions, model, hazardMode, reorderedList, reorderCyclesSaved, reorderNoteEn, reorderNoteAr)
         } else {
-            simulate5Stage(activeInstructions, model, hazardMode, reorderedList, reorderCyclesSaved, reorderNoteEn, reorderNoteAr)
+            simulate5Stage(activeInstructions, model, hazardMode, unifiedMemory, reorderedList, reorderCyclesSaved, reorderNoteEn, reorderNoteAr)
         }
     }
 
@@ -99,8 +102,10 @@ object PipelineSimulator {
             val inst = instructions[i]
             val stageMap = mutableMapOf<Int, CellExecution>()
 
-            // Default fetch cycle is currentCycle (staggered by 1 cycle per instruction)
-            var fetchCycle = if (i == 0) 1 else (schedules[i - 1].stages.values.first { it.stage == PipelineStage.FETCH_4 || it.stage == PipelineStage.STALL }.cycle + 1)
+            var fetchCycle = if (i == 0) 1 else {
+                val prevFetch = schedules[i - 1].stages.values.first { it.stage == PipelineStage.FETCH_4 }.cycle
+                prevFetch + 1
+            }
 
             // Check if prior instruction was a branch (Control Hazard / Rupture)
             if (i > 0 && instructions[i - 1].isBranch) {
@@ -113,7 +118,9 @@ object PipelineSimulator {
                         registerFamily = "IP/PC",
                         stallCycles = branchPenalty,
                         descriptionEn = "Control Hazard (Branch Rupture): Pipeline flush with 2 penalty cycles",
-                        descriptionAr = "خطر تحكم (انقطاع تسلسل القفز): تفريغ الأنبوب ودورتي تأخير (2 cycles de pénalité)"
+                        descriptionAr = "خطر تحكم (انقطاع تسلسل القفز): تفريغ الأنبوب ودورتي تأخير (2 cycles de pénalité)",
+                        solutionEn = "Mitigated via Static/Dynamic Branch Prediction or Delayed Branching to eliminate flush penalty.",
+                        solutionAr = "يُقلل عبر التنبؤ بالتفرع (ثابت/ديناميكي) أو القفز المؤجل (Delayed Branching) لتجنب تفريغ الأنبوب."
                     )
                 )
                 for (b in 0 until branchPenalty) {
@@ -161,6 +168,17 @@ object PipelineSimulator {
 
             if (stallsNeeded > 0 && conflictingProducer != null) {
                 val forwardingSaved = if (hazardMode == HazardMode.FORWARDING) 0 else 1
+                val solEn = if (hazardMode == HazardMode.FORWARDING) {
+                    "Data Forwarding active: ALU result passed directly from EX to EX."
+                } else {
+                    "Resolved via Data Forwarding (eliminating stalls) or compiler Instruction Reordering (filling delay slots)."
+                }
+                val solAr = if (hazardMode == HazardMode.FORWARDING) {
+                    "الاستباق والتمرير نشط: يتم تمرير ناتج الحساب مباشرة من مرحلة التنفيذ EX إلى EX."
+                } else {
+                    "يُحل عبر الاستباق والتمرير (Forwarding) لإلغاء الفقاعات أو إعادة ترتيب التعليمات برمجياً."
+                }
+
                 hazards.add(
                     Hazard(
                         type = HazardType.RAW_DATA,
@@ -170,7 +188,9 @@ object PipelineSimulator {
                         stallCycles = stallsNeeded,
                         forwardingSaves = forwardingSaved,
                         descriptionEn = "RAW Data Hazard on register $conflictingFamily between I${conflictingProducer.id} and I${inst.id}",
-                        descriptionAr = "خطر بيانات حقيقي (RAW) على السجل $conflictingFamily بين التعليمة I${conflictingProducer.id} و I${inst.id}"
+                        descriptionAr = "خطر بيانات حقيقي (RAW) على السجل $conflictingFamily بين التعليمة I${conflictingProducer.id} و I${inst.id}",
+                        solutionEn = solEn,
+                        solutionAr = solAr
                     )
                 )
 
@@ -182,7 +202,7 @@ object PipelineSimulator {
                 }
             }
 
-            // Check WAR and WAW dependencies (Informational / Reordering Constraints)
+            // Check WAR and WAW dependencies
             for (p in 0 until i) {
                 val earlier = instructions[p]
                 if (inst.hasWarDependencyOn(earlier)) {
@@ -196,7 +216,9 @@ object PipelineSimulator {
                             registerFamily = familyName,
                             stallCycles = 0,
                             descriptionEn = "WAR Anti-dependency on $familyName (I${earlier.id} reads, I${inst.id} writes). In-order pipeline is naturally immune (0 stalls), but restricts reordering.",
-                            descriptionAr = "شبه تعارض (Anti-dépendance / WAR) على السجل $familyName: I${earlier.id} تقرأ و I${inst.id} تكتب. محمي طبيعياً في الأنبوب المتسلسل (بدون تجميد)، لكنه يقيد إعادة الترتيب."
+                            descriptionAr = "شبه تعارض (Anti-dépendance / WAR) على السجل $familyName: I${earlier.id} تقرأ و I${inst.id} تكتب. محمي طبيعياً في الأنبوب المتسلسل (بدون تجميد)، لكنه يقيد إعادة الترتيب.",
+                            solutionEn = "In-order pipeline is naturally immune (0 stalls). For out-of-order execution, resolved via Register Renaming.",
+                            solutionAr = "محمي طبيعياً في الأنبوب المتسلسل (0 تأخير). في المعالجات غير المتسلسلة يُحل عبر إعادة تسمية المسجلات (Register Renaming)."
                         )
                     )
                 }
@@ -211,7 +233,9 @@ object PipelineSimulator {
                             registerFamily = familyName,
                             stallCycles = 0,
                             descriptionEn = "WAW Output dependency on $familyName (both write). Write order preserved in-order at WB (0 stalls), but restricts reordering.",
-                            descriptionAr = "تعارض ناتج (Dépendance de sortie / WAW) على السجل $familyName: كلاهما يكتب. ترتيب الكتابة محفوظ بالتسلسل في مرحلة WB (بدون تجميد)، لكنه يقيد إعادة الترتيب."
+                            descriptionAr = "تعارض ناتج (Dépendance de sortie / WAW) على السجل $familyName: كلاهما يكتب. ترتيب الكتابة محفوظ بالتسلسل في مرحلة WB (بدون تجميد)، لكنه يقيد إعادة الترتيب.",
+                            solutionEn = "Write order preserved in-order at WB stage (0 stalls). For out-of-order execution, resolved via Register Renaming.",
+                            solutionAr = "تسلسل الكتابة محفوظ في مرحلة WB (0 تأخير). في المعالجات غير المتسلسلة يُحل عبر إعادة تسمية المسجلات."
                         )
                     )
                 }
@@ -233,6 +257,24 @@ object PipelineSimulator {
             currentCycle = maxOf(currentCycle, writebackCycle)
         }
 
+        // Terminal branch check (if the last instruction is a branch)
+        if (instructions.lastOrNull()?.isBranch == true) {
+            val lastInst = instructions.last()
+            hazards.add(
+                Hazard(
+                    type = HazardType.CONTROL_BRANCH,
+                    sourceInstruction = lastInst,
+                    targetInstruction = lastInst,
+                    registerFamily = "IP/PC",
+                    stallCycles = 0,
+                    descriptionEn = "Terminal Branch (${lastInst.mnemonic}): Branch at sequence end. Continuous execution incurs 2 penalty cycles (flushes pipeline).",
+                    descriptionAr = "قفز في نهاية البرنامج (${lastInst.mnemonic}): في التنفيذ المستمر، يؤدي حسم القفز إلى عقوبة دورتي تفريغ (2 cycles de pénalité).",
+                    solutionEn = "Mitigated via Static/Dynamic Branch Prediction or Delayed Branching.",
+                    solutionAr = "يُقلل عبر التنبؤ بالتفرع (ثابت أو ديناميكي) أو القفز المؤجل (Delayed Branching)."
+                )
+            )
+        }
+
         val totalCycles = schedules.maxOfOrNull { it.stages.keys.maxOrNull() ?: 0 } ?: 0
         val unpipelined = instructions.size * model.depth
         val speedup = if (totalCycles > 0) unpipelined.toDouble() / totalCycles.toDouble() else 1.0
@@ -240,6 +282,7 @@ object PipelineSimulator {
         return SimulationResult(
             model = model,
             hazardMode = hazardMode,
+            unifiedMemory = false,
             totalCycles = totalCycles,
             unpipelinedCycles = unpipelined,
             speedup = Math.round(speedup * 100.0) / 100.0,
@@ -256,6 +299,7 @@ object PipelineSimulator {
     /**
      * 5-Stage Model (TD 4 – Exercice 6): IF -> ID -> EX -> MEM -> WB
      * Memory load (MOV RAX, [RBX]) produces value at end of MEM (cycle 4).
+     * Memory store (MOV [RBX], RAX) accesses data memory in MEM (cycle 4).
      * ALU instruction (ADD RAX, RCX) produces value at end of EX (cycle 3).
      * Operands consumed at start of EX (cycle 3).
      *
@@ -263,11 +307,17 @@ object PipelineSimulator {
      * With Forwarding:
      * - ALU to ALU: Forward from EX to EX -> 0 stalls.
      * - Load to ALU (Load-Use): Forward from MEM to EX -> 1 stall (TD 4 Ex 6).
+     *
+     * Unified Memory vs Harvard:
+     * - When unifiedMemory = true: IF and MEM cannot occur simultaneously on a single memory port.
+     *   If a fetch cycle collides with an earlier instruction's MEM cycle, 1 structural stall bubble is inserted.
+     * - When unifiedMemory = false (Harvard): Separate I-Cache and D-Cache allow simultaneous fetch and memory access (0 structural stalls).
      */
     private fun simulate5Stage(
         instructions: List<Instruction>,
         model: PipelineModel,
         hazardMode: HazardMode,
+        unifiedMemory: Boolean,
         reorderedList: List<Instruction>?,
         reorderCyclesSaved: Int,
         reorderNoteEn: String,
@@ -276,7 +326,6 @@ object PipelineSimulator {
         val schedules = mutableListOf<InstructionSchedule>()
         val hazards = mutableListOf<Hazard>()
 
-        var currentCycle = 1
         var totalStalls = 0
 
         // Maps instruction index -> cycle where its EX, MEM, WB completed
@@ -284,13 +333,19 @@ object PipelineSimulator {
         val memCycleMap = mutableMapOf<Int, Int>()
         val wbCycleMap = mutableMapOf<Int, Int>()
 
+        // For tracking unified memory collisions: cycle -> earlier memory instruction
+        val activeMemCycles = mutableMapOf<Int, Instruction>()
+
         for (i in instructions.indices) {
             val inst = instructions[i]
             val stageMap = mutableMapOf<Int, CellExecution>()
 
-            var fetchCycle = if (i == 0) 1 else (schedules[i - 1].stages.values.first { it.stage == PipelineStage.FETCH_5 || it.stage == PipelineStage.STALL }.cycle + 1)
+            var fetchCycle = if (i == 0) 1 else {
+                val prevFetch = schedules[i - 1].stages.values.first { it.stage == PipelineStage.FETCH_5 }.cycle
+                prevFetch + 1
+            }
 
-            // Branch Penalty in 5-stage is 3 cycles (per TD 4 Ex 6)
+            // 1. Branch Penalty in 5-stage is 3 cycles (per TD 4 Ex 6)
             if (i > 0 && instructions[i - 1].isBranch) {
                 val branchPenalty = 3
                 hazards.add(
@@ -301,10 +356,35 @@ object PipelineSimulator {
                         registerFamily = "RIP/EIP",
                         stallCycles = branchPenalty,
                         descriptionEn = "Branch penalty: 3 penalty cycles per TD 4 Exercise 6",
-                        descriptionAr = "عقوبة تفرع القفز: 3 دورات تأخير حسب تمرين TD 4 رقم 6"
+                        descriptionAr = "عقوبة تفرع القفز: 3 دورات تأخير حسب تمرين TD 4 رقم 6",
+                        solutionEn = "Mitigated via Static/Dynamic Branch Prediction or Branch Target Buffers (BTB).",
+                        solutionAr = "يُقلل عبر التنبؤ بالتفرع (Branch Prediction) أو جدول أهداف القفز (BTB)."
                     )
                 )
                 for (b in 0 until branchPenalty) {
+                    stageMap[fetchCycle] = CellExecution(fetchCycle, PipelineStage.STALL, isStall = true)
+                    fetchCycle++
+                    totalStalls++
+                }
+            }
+
+            // 2. Structural Hazard Check (Unified Memory collision between IF and earlier MEM)
+            if (unifiedMemory) {
+                while (activeMemCycles.containsKey(fetchCycle)) {
+                    val conflictingInst = activeMemCycles[fetchCycle]!!
+                    hazards.add(
+                        Hazard(
+                            type = HazardType.STRUCTURAL,
+                            sourceInstruction = conflictingInst,
+                            targetInstruction = inst,
+                            registerFamily = "Unified Memory",
+                            stallCycles = 1,
+                            descriptionEn = "Structural Hazard on Unified Memory: IF stage of I${inst.id} collides with MEM stage of I${conflictingInst.id} at cycle $fetchCycle.",
+                            descriptionAr = "خطر هيكلي (Structural) على الذاكرة الموحدة: مرحلة IF للتعليمة I${inst.id} تتعارض مع مرحلة MEM للتعليمة I${conflictingInst.id} في الدورة $fetchCycle.",
+                            solutionEn = "Resolved by adopting Harvard Architecture (separate I/D Caches) or Dual-Ported Memory to allow concurrent fetch and memory access.",
+                            solutionAr = "يُحل باعتماد معمارية هارفارد (Harvard) بفصل كاش الأوامر عن البيانات أو استخدام ذاكرة مزدوجة المنافذ (Dual-Port)."
+                        )
+                    )
                     stageMap[fetchCycle] = CellExecution(fetchCycle, PipelineStage.STALL, isStall = true)
                     fetchCycle++
                     totalStalls++
@@ -317,7 +397,7 @@ object PipelineSimulator {
             // ID Stage
             var idCycle = fetchCycle + 1
 
-            // Hazard check
+            // 3. RAW Hazard check on prior instructions
             var stallsNeeded = 0
             var conflictingFamily = ""
             var conflictingProducer: Instruction? = null
@@ -354,6 +434,17 @@ object PipelineSimulator {
 
             if (stallsNeeded > 0 && conflictingProducer != null) {
                 val saves = if (hazardMode == HazardMode.FORWARDING) 0 else (if (wasLoadUse) 1 else 2)
+                val solEn = if (wasLoadUse) {
+                    "Resolved via MEM-to-EX Data Forwarding (leaves 1 stall) + compiler instruction reordering (TD4 Ex6)."
+                } else {
+                    "Resolved via EX-to-EX Data Forwarding (0 stalls) or Instruction Reordering."
+                }
+                val solAr = if (wasLoadUse) {
+                    "يُحل عبر التمرير من MEM إلى EX (يتبقى تأخير دورة واحدة) + إعادة ترتيب التعليمات برمجياً (حسب TD4)."
+                } else {
+                    "يُحل عبر التمرير المباشر من EX إلى EX (0 تأخير) أو إعادة ترتيب التعليمات برمجياً."
+                }
+
                 hazards.add(
                     Hazard(
                         type = HazardType.RAW_DATA,
@@ -371,7 +462,9 @@ object PipelineSimulator {
                             "خطر Load-Use (RAW) على السجل $conflictingFamily: $stallsNeeded فقاعة (حسب تمرين TD4)"
                         } else {
                             "خطر بيانات (RAW) على السجل $conflictingFamily: $stallsNeeded فقاعة"
-                        }
+                        },
+                        solutionEn = solEn,
+                        solutionAr = solAr
                     )
                 )
 
@@ -382,7 +475,7 @@ object PipelineSimulator {
                 }
             }
 
-            // Check WAR and WAW dependencies
+            // 4. Check WAR and WAW dependencies
             for (p in 0 until i) {
                 val earlier = instructions[p]
                 if (inst.hasWarDependencyOn(earlier)) {
@@ -396,7 +489,9 @@ object PipelineSimulator {
                             registerFamily = familyName,
                             stallCycles = 0,
                             descriptionEn = "WAR Anti-dependency on $familyName (I${earlier.id} reads, I${inst.id} writes). In-order pipeline is naturally immune (0 stalls), but restricts reordering.",
-                            descriptionAr = "شبه تعارض (Anti-dépendance / WAR) على السجل $familyName: I${earlier.id} تقرأ و I${inst.id} تكتب. محمي طبيعياً في الأنبوب المتسلسل (بدون تجميد)، لكنه يقيد إعادة الترتيب."
+                            descriptionAr = "شبه تعارض (Anti-dépendance / WAR) على السجل $familyName: I${earlier.id} تقرأ و I${inst.id} تكتب. محمي طبيعياً في الأنبوب المتسلسل (بدون تجميد)، لكنه يقيد إعادة الترتيب.",
+                            solutionEn = "In-order pipeline is naturally immune (0 stalls). For out-of-order CPUs, resolved via Register Renaming.",
+                            solutionAr = "محمي طبيعياً في الأنبوب المتسلسل (0 تأخير). في المعالجات غير المتسلسلة يُحل عبر إعادة تسمية المسجلات."
                         )
                     )
                 }
@@ -411,7 +506,9 @@ object PipelineSimulator {
                             registerFamily = familyName,
                             stallCycles = 0,
                             descriptionEn = "WAW Output dependency on $familyName (both write). Write order preserved in-order at WB (0 stalls), but restricts reordering.",
-                            descriptionAr = "تعارض ناتج (Dépendance de sortie / WAW) على السجل $familyName: كلاهما يكتب. تسلسل الكتابة محفوظ في مرحلة WB (بدون تجميد)، لكنه يقيد إعادة الترتيب."
+                            descriptionAr = "تعارض ناتج (Dépendance de sortie / WAW) على السجل $familyName: كلاهما يكتب. تسلسل الكتابة محفوظ في مرحلة WB (بدون تجميد)، لكنه يقيد إعادة الترتيب.",
+                            solutionEn = "Write order preserved in-order at WB stage (0 stalls). In out-of-order CPUs, resolved via Register Renaming.",
+                            solutionAr = "تسلسل الكتابة محفوظ في مرحلة WB (0 تأخير). في المعالجات غير المتسلسلة يُحل عبر إعادة تسمية المسجلات."
                         )
                     )
                 }
@@ -429,13 +526,35 @@ object PipelineSimulator {
             stageMap[memCycle] = CellExecution(memCycle, PipelineStage.MEMORY_5)
             memCycleMap[i] = memCycle
 
+            // Track memory access for unified memory collisions
+            if (inst.usesDataMemory) {
+                activeMemCycles[memCycle] = inst
+            }
+
             // WB Stage
             val wbCycle = memCycle + 1
             stageMap[wbCycle] = CellExecution(wbCycle, PipelineStage.WRITEBACK_5)
             wbCycleMap[i] = wbCycle
 
             schedules.add(InstructionSchedule(inst, stageMap))
-            currentCycle = maxOf(currentCycle, wbCycle)
+        }
+
+        // 5. Terminal Branch check (if the last instruction is a branch)
+        if (instructions.lastOrNull()?.isBranch == true) {
+            val lastInst = instructions.last()
+            hazards.add(
+                Hazard(
+                    type = HazardType.CONTROL_BRANCH,
+                    sourceInstruction = lastInst,
+                    targetInstruction = lastInst,
+                    registerFamily = "RIP/EIP",
+                    stallCycles = 0,
+                    descriptionEn = "Terminal Branch (${lastInst.mnemonic}): Branch at sequence end. In continuous execution, branch resolution incurs 3 penalty cycles (TD4 Ex6).",
+                    descriptionAr = "قفز في نهاية البرنامج (${lastInst.mnemonic}): في التنفيذ المستمر، يؤدي حسم القفز إلى عقوبة 3 دورات تفريغ (حسب تمرين TD4).",
+                    solutionEn = "Mitigated via Static/Dynamic Branch Prediction or Branch Target Buffers (BTB).",
+                    solutionAr = "يُقلل عبر التنبؤ بالتفرع (Branch Prediction) أو جدول أهداف القفز (BTB)."
+                )
+            )
         }
 
         val totalCycles = schedules.maxOfOrNull { it.stages.keys.maxOrNull() ?: 0 } ?: 0
@@ -445,6 +564,7 @@ object PipelineSimulator {
         return SimulationResult(
             model = model,
             hazardMode = hazardMode,
+            unifiedMemory = unifiedMemory,
             totalCycles = totalCycles,
             unpipelinedCycles = unpipelined,
             speedup = Math.round(speedup * 100.0) / 100.0,

@@ -46,10 +46,12 @@ Pipeline Studio simulates instruction-level pipelining and hazard resolution for
   - Detected and diagnosed in the interface. In standard in-order execution, WAR causes zero stalls because operands are read in Decode before Write Back, but it strictly constrains instruction reordering.
 - **WAW (Write After Write) · Output Dependency**:
   - Detected and diagnosed. In-order execution preserves the write sequence at Write Back (0 stalls), but compilers are restricted from reordering past WAW boundaries.
+- **Structural Hazards (Conflit de ressources / Unified Memory)**:
+  - Simulates single memory port collisions in Von Neumann architectures when a subsequent instruction's `IF` cycle collides with an earlier instruction's `MEM` data access stage.
+  - Features an interactive toggle between **Harvard Architecture** (separate I/D caches, 0 structural stalls) and **Unified Memory** (inserts a 1-cycle structural bubble).
 - **Control Hazards (Rupture de séquence)**:
   - Simulates branch penalties and pipeline flushes (3 bubble cycles for 5-stage, 2 cycles for 4-stage).
-- **Structural Hazards (Conflit de ressources)**:
-  - Highlights resource collision risks (e.g., single memory bus architectures).
+  - Includes advisory diagnostic reporting for terminal branch instructions.
 
 ### Hazard Resolution Modes
 - **Stalls Only (`Blocage`)**: Injects bubble cycles until dependent operands are committed at `WB`.

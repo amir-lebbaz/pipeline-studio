@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     // Current Simulation State
     private var selectedModel: PipelineModel = PipelineModel.FIVE_STAGE
     private var selectedHazardMode: HazardMode = HazardMode.STALLS_ONLY
+    private var selectedUnifiedMemory: Boolean = false
 
     private var monoTypeface: Typeface? = null
     private var sansTypeface: Typeface? = null
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         setupNavigationButtons()
         setupModelSwitch()
         setupHazardModeSwitch()
+        setupMemorySwitch()
         setupPresetButtons()
         setupActionButtons()
 
@@ -154,11 +156,45 @@ class MainActivity : AppCompatActivity() {
         binding.btnModeReordering.setTextColor(if (selectedHazardMode == HazardMode.REORDERING) activeTextColor else inactiveTextColor)
     }
 
+    private fun setupMemorySwitch() {
+        binding.btnMemHarvard.setOnClickListener {
+            selectedUnifiedMemory = false
+            updateMemorySwitchUI()
+            runSimulation()
+        }
+        binding.btnMemUnified.setOnClickListener {
+            selectedUnifiedMemory = true
+            updateMemorySwitchUI()
+            runSimulation()
+        }
+        updateMemorySwitchUI()
+    }
+
+    private fun updateMemorySwitchUI() {
+        val activeBg = ContextCompat.getDrawable(this, R.drawable.bg_pill_active)
+        val inactiveBg = ContextCompat.getDrawable(this, R.drawable.bg_pill_inactive)
+        val activeTextColor = ContextCompat.getColor(this, R.color.spectral_white)
+        val inactiveTextColor = ContextCompat.getColor(this, R.color.midnight_ink)
+
+        if (!selectedUnifiedMemory) {
+            binding.btnMemHarvard.background = activeBg
+            binding.btnMemHarvard.setTextColor(activeTextColor)
+            binding.btnMemUnified.background = inactiveBg
+            binding.btnMemUnified.setTextColor(inactiveTextColor)
+        } else {
+            binding.btnMemHarvard.background = inactiveBg
+            binding.btnMemHarvard.setTextColor(inactiveTextColor)
+            binding.btnMemUnified.background = activeBg
+            binding.btnMemUnified.setTextColor(activeTextColor)
+        }
+    }
+
     private fun setupPresetButtons() {
         binding.presetTd4.setOnClickListener { loadPresetTD4() }
         binding.presetSlide29.setOnClickListener { loadPresetSlide29() }
         binding.presetBranch.setOnClickListener { loadPresetBranch() }
         binding.preset4Stage.setOnClickListener { loadPreset4Stage() }
+        binding.presetAllHazards.setOnClickListener { loadPresetAllHazards() }
     }
 
     private fun loadPresetTD4() {
@@ -172,8 +208,10 @@ class MainActivity : AppCompatActivity() {
         )
         selectedModel = PipelineModel.FIVE_STAGE
         selectedHazardMode = HazardMode.STALLS_ONLY
+        selectedUnifiedMemory = false
         updateModelSwitchUI()
         updateHazardModeUI()
+        updateMemorySwitchUI()
         runSimulation()
     }
 
@@ -188,8 +226,10 @@ class MainActivity : AppCompatActivity() {
         )
         selectedModel = PipelineModel.FOUR_STAGE
         selectedHazardMode = HazardMode.REORDERING
+        selectedUnifiedMemory = false
         updateModelSwitchUI()
         updateHazardModeUI()
+        updateMemorySwitchUI()
         runSimulation()
     }
 
@@ -204,8 +244,10 @@ class MainActivity : AppCompatActivity() {
         )
         selectedModel = PipelineModel.FOUR_STAGE
         selectedHazardMode = HazardMode.STALLS_ONLY
+        selectedUnifiedMemory = false
         updateModelSwitchUI()
         updateHazardModeUI()
+        updateMemorySwitchUI()
         runSimulation()
     }
 
@@ -220,8 +262,30 @@ class MainActivity : AppCompatActivity() {
         )
         selectedModel = PipelineModel.FOUR_STAGE
         selectedHazardMode = HazardMode.FORWARDING
+        selectedUnifiedMemory = false
         updateModelSwitchUI()
         updateHazardModeUI()
+        updateMemorySwitchUI()
+        runSimulation()
+    }
+
+    private fun loadPresetAllHazards() {
+        binding.etAssemblyCode.setText(
+            """
+            MOV RAX, [RBX]
+            ADD RAX, RCX
+            MOV RDX, RAX
+            MOV RCX, 5
+            MOV RAX, 10
+            JMP L
+            """.trimIndent()
+        )
+        selectedModel = PipelineModel.FIVE_STAGE
+        selectedHazardMode = HazardMode.STALLS_ONLY
+        selectedUnifiedMemory = true
+        updateModelSwitchUI()
+        updateHazardModeUI()
+        updateMemorySwitchUI()
         runSimulation()
     }
 
@@ -236,7 +300,7 @@ class MainActivity : AppCompatActivity() {
     private fun runSimulation() {
         val rawCode = binding.etAssemblyCode.text?.toString() ?: ""
         val instructions = Parser.parse(rawCode)
-        val result = PipelineSimulator.simulate(instructions, selectedModel, selectedHazardMode)
+        val result = PipelineSimulator.simulate(instructions, selectedModel, selectedHazardMode, selectedUnifiedMemory)
 
         renderHeroMetrics(result)
         renderChronogram(result)
@@ -471,39 +535,61 @@ class MainActivity : AppCompatActivity() {
                 layoutParams = lp
             }
 
-            // Top Row: Hazard Title + Stalls Badge
+            // Line 1: Top Row: Hazard Title + Instructions/Register + Stalls Badge
             val headerRow = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
             }
 
+            val titleText = when (hazard.type) {
+                HazardType.RAW_DATA -> getString(R.string.hazard_raw_title)
+                HazardType.WAR_DATA -> getString(R.string.hazard_war_title)
+                HazardType.WAW_DATA -> getString(R.string.hazard_waw_title)
+                HazardType.CONTROL_BRANCH -> getString(R.string.hazard_control_title)
+                HazardType.STRUCTURAL -> getString(R.string.hazard_structural_title)
+            }
+
+            val targetTag = if (hazard.sourceInstruction.id != hazard.targetInstruction.id) {
+                " · I${hazard.sourceInstruction.id} → I${hazard.targetInstruction.id} [${hazard.registerFamily}]"
+            } else {
+                " · I${hazard.sourceInstruction.id} [${hazard.registerFamily}]"
+            }
+
             val titleTv = TextView(this).apply {
                 layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                text = when (hazard.type) {
-                    HazardType.RAW_DATA -> getString(R.string.hazard_raw_title)
-                    HazardType.WAR_DATA -> getString(R.string.hazard_war_title)
-                    HazardType.WAW_DATA -> getString(R.string.hazard_waw_title)
-                    HazardType.CONTROL_BRANCH -> getString(R.string.hazard_control_title)
-                    HazardType.STRUCTURAL -> getString(R.string.hazard_structural_title)
-                }
+                text = "$titleText$targetTag"
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
                 setTextColor(ContextCompat.getColor(this@MainActivity, R.color.midnight_ink))
                 typeface = sansTypeface
             }
 
             val badgeTv = TextView(this).apply {
-                if (hazard.type == HazardType.WAR_DATA || hazard.type == HazardType.WAW_DATA) {
-                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_preset_chip)
-                    text = getString(R.string.badge_in_order_safe)
-                    setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_primary_light))
-                } else if (hazard.forwardingSaves > 0) {
-                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_pill_accent)
-                    text = "${hazard.stallCycles} Stalls"
-                    setTextColor(ContextCompat.getColor(this@MainActivity, R.color.midnight_ink))
-                } else {
-                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_pill_active)
-                    text = "${hazard.stallCycles} Stalls"
-                    setTextColor(ContextCompat.getColor(this@MainActivity, R.color.spectral_white))
+                when {
+                    hazard.type == HazardType.WAR_DATA || hazard.type == HazardType.WAW_DATA -> {
+                        background = ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_preset_chip)
+                        text = getString(R.string.badge_in_order_safe)
+                        setTextColor(ContextCompat.getColor(this@MainActivity, R.color.spectral_white))
+                    }
+                    hazard.type == HazardType.STRUCTURAL -> {
+                        background = ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_pill_accent)
+                        text = getString(R.string.badge_structural_stall)
+                        setTextColor(ContextCompat.getColor(this@MainActivity, R.color.midnight_ink))
+                    }
+                    hazard.type == HazardType.CONTROL_BRANCH && hazard.stallCycles == 0 -> {
+                        background = ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_preset_chip)
+                        text = getString(R.string.badge_advisory_zero)
+                        setTextColor(ContextCompat.getColor(this@MainActivity, R.color.spectral_white))
+                    }
+                    hazard.forwardingSaves > 0 -> {
+                        background = ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_pill_accent)
+                        text = "+${hazard.stallCycles} Stall"
+                        setTextColor(ContextCompat.getColor(this@MainActivity, R.color.midnight_ink))
+                    }
+                    else -> {
+                        background = ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_pill_active)
+                        text = "+${hazard.stallCycles} Stalls"
+                        setTextColor(ContextCompat.getColor(this@MainActivity, R.color.spectral_white))
+                    }
                 }
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
                 typeface = monoTypeface
@@ -514,7 +600,7 @@ class MainActivity : AppCompatActivity() {
             headerRow.addView(badgeTv)
             itemCard.addView(headerRow)
 
-            // Detail line
+            // Line 2: Cause and Description
             val detailTv = TextView(this).apply {
                 text = if (isArabic) hazard.descriptionAr else hazard.descriptionEn
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
@@ -523,6 +609,31 @@ class MainActivity : AppCompatActivity() {
                 setPadding(0, dpToPx(4), 0, 0)
             }
             itemCard.addView(detailTv)
+
+            // Line 3: Cycle Impact Note (Forwarding savings if applicable)
+            if (hazard.forwardingSaves > 0) {
+                val savingsTv = TextView(this).apply {
+                    text = "⚡ " + String.format(getString(R.string.hazard_forwarding_saved), hazard.forwardingSaves)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
+                    setTextColor(ContextCompat.getColor(this@MainActivity, R.color.stormy_slate))
+                    typeface = monoTypeface
+                    setPadding(0, dpToPx(2), 0, 0)
+                }
+                itemCard.addView(savingsTv)
+            }
+
+            // Line 4: Educational Resolution & Solution
+            val solutionText = if (isArabic) hazard.solutionAr else hazard.solutionEn
+            if (solutionText.isNotEmpty()) {
+                val solutionTv = TextView(this).apply {
+                    text = "${getString(R.string.hazard_solution_label)}$solutionText"
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                    setTextColor(ContextCompat.getColor(this@MainActivity, R.color.eerie_sage))
+                    typeface = sansTypeface
+                    setPadding(0, dpToPx(4), 0, 0)
+                }
+                itemCard.addView(solutionTv)
+            }
 
             list.addView(itemCard)
         }
