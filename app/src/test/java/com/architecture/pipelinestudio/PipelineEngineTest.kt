@@ -99,7 +99,11 @@ class PipelineEngineTest {
         assertTrue("Cycles should be saved by reordering", reorderResult.cyclesSavedByReordering > 0)
         assertTrue(
             "Reordered execution should take fewer or equal cycles compared to stalls-only",
-            reorderResult.totalCycles < stallsResult.totalCycles
+            reorderResult.totalCycles <= stallsResult.totalCycles
+        )
+        assertTrue(
+            "Reordering eliminates stall bubbles",
+            reorderResult.totalStalls < stallsResult.totalStalls
         )
     }
 
