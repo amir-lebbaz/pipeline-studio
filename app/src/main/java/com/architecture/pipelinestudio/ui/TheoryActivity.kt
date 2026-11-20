@@ -11,8 +11,7 @@ class TheoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTheoryBinding
 
     override fun attachBaseContext(newBase: Context) {
-        val lang = LocaleHelper.getPersistedLocale(newBase)
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, lang))
+        super.attachBaseContext(LocaleHelper.onAttach(newBase))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
