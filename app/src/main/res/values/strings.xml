@@ -109,7 +109,7 @@
     <string name="about_academic_course">Architecture des ordinateurs II (UEF31)</string>
     <string name="about_academic_desc">Engineered specifically to simulate and analyze instruction-level pipelining, x86 register aliasing, cycle chronograms, and hazard resolution techniques aligned with academic examinations and TD series.</string>
     <string name="about_specs_heading">Specifications</string>
-    <string name="about_specs_version">Version: v1.1</string>
+    <string name="about_specs_version">Version: v1.2</string>
     <string name="about_specs_offline">100% Offline · Zero Data Collection</string>
     <string name="about_specs_design">Design System: Ghostly Fog &amp; iDraft Bento</string>
     <string name="about_links_heading">Links &amp; Source</string>

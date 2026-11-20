@@ -11,8 +11,8 @@ Computer Science Student, Université Amar Telidji – Laghouat
 
 Get the latest build directly on your Android phone without needing Android Studio or an IDE:
 
-- **Download APK**: [Pipeline Studio v1.1 on GitHub Releases](https://github.com/amir-lebbaz/pipeline-studio/releases/latest)
-- **Direct APK Link**: [PipelineStudio-v1.1.apk](https://github.com/amir-lebbaz/pipeline-studio/releases/download/v1.1/PipelineStudio-v1.1.apk)
+- **Download APK**: [Pipeline Studio v1.2 on GitHub Releases](https://github.com/amir-lebbaz/pipeline-studio/releases/latest)
+- **Direct APK Link**: [PipelineStudio-v1.2.apk](https://github.com/amir-lebbaz/pipeline-studio/releases/download/v1.2/PipelineStudio-v1.2.apk)
 
 The application runs 100% offline, requires zero special permissions, and has an APK size under 5 MB.
 

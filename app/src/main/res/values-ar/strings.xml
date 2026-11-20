@@ -109,7 +109,7 @@
     <string name="about_academic_course">مقياس: معمارية الحواسيب 2 (Architecture II - UEF31)</string>
     <string name="about_academic_desc">تم تطوير التطبيق خصيصاً لمساعدة الطلبة على محاكاة خطوط التجميع، كشف مخاطر مسجلات x86، توليد المخططات الزمنية (Chronogram)، وحساب معايير التسريع والأداء بدقة متوافقة مع امتحانات وتمارين الجامعة.</string>
     <string name="about_specs_heading">المواصفات التقنية</string>
-    <string name="about_specs_version">الإصدار: v1.1</string>
+    <string name="about_specs_version">الإصدار: v1.2</string>
     <string name="about_specs_offline">يعمل محلياً 100% دون إنترنت · بدون جمع أي بيانات</string>
     <string name="about_specs_design">نظام التصميم: Ghostly Fog و iDraft Bento</string>
     <string name="about_links_heading">الروابط والمصدر</string>
