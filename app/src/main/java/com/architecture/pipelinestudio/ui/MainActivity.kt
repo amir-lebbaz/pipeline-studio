@@ -1,6 +1,7 @@
 package com.architecture.pipelinestudio.ui
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         loadTypefaces()
         setupLanguageToggle()
+        setupNavigationButtons()
         setupModelSwitch()
         setupHazardModeSwitch()
         setupPresetButtons()
@@ -72,6 +74,15 @@ class MainActivity : AppCompatActivity() {
             val targetLang = if (currentLang == LocaleHelper.LANG_AR) LocaleHelper.LANG_EN else LocaleHelper.LANG_AR
             LocaleHelper.applyLocale(this, targetLang)
             recreate()
+        }
+    }
+
+    private fun setupNavigationButtons() {
+        binding.btnNavTheory.setOnClickListener {
+            startActivity(Intent(this, TheoryActivity::class.java))
+        }
+        binding.btnNavAbout.setOnClickListener {
+            startActivity(Intent(this, AboutActivity::class.java))
         }
     }
 
@@ -470,6 +481,8 @@ class MainActivity : AppCompatActivity() {
                 layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                 text = when (hazard.type) {
                     HazardType.RAW_DATA -> getString(R.string.hazard_raw_title)
+                    HazardType.WAR_DATA -> getString(R.string.hazard_war_title)
+                    HazardType.WAW_DATA -> getString(R.string.hazard_waw_title)
                     HazardType.CONTROL_BRANCH -> getString(R.string.hazard_control_title)
                     HazardType.STRUCTURAL -> getString(R.string.hazard_structural_title)
                 }
@@ -479,16 +492,19 @@ class MainActivity : AppCompatActivity() {
             }
 
             val badgeTv = TextView(this).apply {
-                background = if (hazard.forwardingSaves > 0) {
-                    ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_pill_accent)
+                if (hazard.type == HazardType.WAR_DATA || hazard.type == HazardType.WAW_DATA) {
+                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_preset_chip)
+                    text = getString(R.string.badge_in_order_safe)
+                    setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_primary_light))
+                } else if (hazard.forwardingSaves > 0) {
+                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_pill_accent)
+                    text = "${hazard.stallCycles} Stalls"
+                    setTextColor(ContextCompat.getColor(this@MainActivity, R.color.midnight_ink))
                 } else {
-                    ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_pill_active)
+                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.bg_pill_active)
+                    text = "${hazard.stallCycles} Stalls"
+                    setTextColor(ContextCompat.getColor(this@MainActivity, R.color.spectral_white))
                 }
-                text = "${hazard.stallCycles} Stalls"
-                setTextColor(
-                    if (hazard.forwardingSaves > 0) ContextCompat.getColor(this@MainActivity, R.color.midnight_ink)
-                    else ContextCompat.getColor(this@MainActivity, R.color.spectral_white)
-                )
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
                 typeface = monoTypeface
                 setPadding(dpToPx(8), dpToPx(3), dpToPx(8), dpToPx(3))

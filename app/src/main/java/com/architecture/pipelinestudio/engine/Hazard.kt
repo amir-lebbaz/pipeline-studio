@@ -2,6 +2,8 @@ package com.architecture.pipelinestudio.engine
 
 enum class HazardType {
     RAW_DATA,
+    WAR_DATA,
+    WAW_DATA,
     CONTROL_BRANCH,
     STRUCTURAL
 }

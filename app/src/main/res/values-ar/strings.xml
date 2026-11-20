@@ -1,57 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">استوديو الأنابيب</string>
-    <string name="app_subtitle">معمارية الحاسوب 2 · جامعة الأغواط</string>
+    <string name="app_name">Pipeline Studio</string>
+    <string name="app_subtitle">معمارية الحواسيب 2 · الأغواط</string>
 
-    <!-- Top Bar -->
+    <!-- Top Bar & Navigation -->
     <string name="lang_toggle">EN</string>
     <string name="lang_current">AR</string>
+    <string name="nav_theory">الدليل الأكاديمي</string>
+    <string name="nav_about">عن التطبيق</string>
+    <string name="btn_back">رجوع</string>
 
     <!-- Hero Card Metrics -->
     <string name="hero_title">نظرة عامة على الأداء</string>
     <string name="metric_total_cycles">إجمالي الدورات</string>
     <string name="metric_speedup">التسريع (S)</string>
     <string name="stat_stages_label">المراحل</string>
-    <string name="stat_stalls_label">الفقاعات (Stalls)</string>
+    <string name="stat_stalls_label">التأخير (الفقاعات)</string>
     <string name="stat_hazards_label">المخاطر</string>
 
     <!-- Assembly Editor Card -->
-    <string name="section_assembly_input">برنامج الأسمبلي</string>
-    <string name="assembly_hint">; أدخل تعليمات x86 مثال:\nMOV RAX, [RBX]\nADD RAX, RCX\nJMP L</string>
-    <string name="pipeline_model_label">عمق الأنبوب (Model)</string>
+    <string name="section_assembly_input">برنامج لغة التجميع</string>
+    <string name="assembly_hint">; أدخل تعليمات x86، مثال:\nMOV RAX, [RBX]\nADD RAX, RCX\nJMP L</string>
+    <string name="pipeline_model_label">عمق الأنبوب (المراحل)</string>
     <string name="model_4_stage">4 مراحل (F-D-E-WB)</string>
     <string name="model_5_stage">5 مراحل (IF-ID-EX-MEM-WB)</string>
-    <string name="hazard_resolution_label">معالجة المخاطر (Résolution)</string>
-    <string name="mode_stalls_only">تعطيل فقط (Stalls)</string>
-    <string name="mode_forwarding">تمرير (Forwarding)</string>
-    <string name="mode_reordering">إعادة الترتيب</string>
+    <string name="hazard_resolution_label">طريقة معالجة المخاطر</string>
+    <string name="mode_stalls_only">تجميد فقط (Stalls)</string>
+    <string name="mode_forwarding">استباق وتمرير (Forwarding)</string>
+    <string name="mode_reordering">إعادة الترتيب (Reordering)</string>
     <string name="btn_simulate">محاكاة الأنبوب</string>
     <string name="btn_clear">مسح</string>
 
     <!-- Presets Strip -->
-    <string name="section_presets">أمثلة المقرر والتمارين</string>
-    <string name="preset_td4_ex6">TD4 تمرين 6 (RAW)</string>
-    <string name="preset_slide29">سلايد 29 (RAW وإعادة ترتيب)</string>
+    <string name="section_presets">أمثلة المقياس</string>
+    <string name="preset_td4_ex6">تمرين TD4 رقم 6 (RAW)</string>
+    <string name="preset_slide29">الشريحة 29 (RAW وإعادة ترتيب)</string>
     <string name="preset_branch">تفريغ القفز (Branch)</string>
     <string name="preset_4stage_basic">4 مراحل أساسي</string>
 
     <!-- Pipeline Chronogram -->
-    <string name="section_chronogram">المخطط الزمني للأنبوب</string>
-    <string name="chronogram_hint">اسحب أفقياً لمعاينة تنفيذ المراحل دورة بدورة</string>
+    <string name="section_chronogram">المخطط الزمني للأنبوب (Chronogram)</string>
+    <string name="chronogram_hint">مرر أفقياً لتتبع تنفيذ كل تعليمة دورة بدورة</string>
     <string name="inst_column_header">التعليمة</string>
     <string name="cycle_prefix">CC</string>
-    <string name="stall_bulle">Bulle</string>
+    <string name="stall_bulle">فقاعة</string>
 
     <!-- Hazard Report -->
-    <string name="section_hazards">تشخيص وتحليل المخاطر (Aléas)</string>
-    <string name="no_hazards_detected">لم يتم رصد أي مخاطر. تدفق الأنبوب مثالي 100%.</string>
-    <string name="hazard_raw_title">خطر بيانات (RAW / Dépendance)</string>
-    <string name="hazard_control_title">خطر تحكم (قفز / Rupture)</string>
-    <string name="hazard_structural_title">خطر بنية (تعارض موارد)</string>
-    <string name="hazard_affected_register">السجل المعني: %1$s</string>
+    <string name="section_hazards">تحليل المخاطر والتشخيص</string>
+    <string name="no_hazards_detected">لم يتم رصد أي مخاطر. تدفق مثالي وكامل للأنبوب.</string>
+    <string name="hazard_raw_title">خطر بيانات حقيقي (RAW)</string>
+    <string name="hazard_war_title">شبه تعارض بيانات (WAR)</string>
+    <string name="hazard_waw_title">تعارض ناتج بيانات (WAW)</string>
+    <string name="hazard_control_title">خطر تحكم وقَفز (Branch)</string>
+    <string name="hazard_structural_title">خطر هيكلي (مادي)</string>
+    <string name="badge_in_order_safe">محمي بالتسلسل (0 تأخير)</string>
+    <string name="hazard_affected_register">السجل المتأثر: %1$s</string>
     <string name="hazard_between_instructions">بين التعليمة %1$s و %2$s</string>
-    <string name="hazard_stalls_penalty">الضريبة: %1$d فقاعة (Stalls)</string>
-    <string name="hazard_forwarding_saved">التمرير وفّر: %1$d دورة</string>
-    <string name="reordering_applied_title">تم تطبيق إعادة الترتيب (Réordonnancement)</string>
-    <string name="reordering_applied_desc">تم تقديم التعليمة المستقلة %1$s لتفادي تعطيل الأنبوب تماماً.</string>
+    <string name="hazard_stalls_penalty">العقوبة: %1$d دورات تجميد (فقاعات)</string>
+    <string name="hazard_forwarding_saved">وفّر التمرير: %1$d دورات</string>
+    <string name="reordering_applied_title">تم تطبيق إعادة ترتيب الأوامر بنجاح</string>
+    <string name="reordering_applied_desc">تم تقديم التعليمة المستقلة %1$s للقضاء على فقاعات التجميد.</string>
+
+    <!-- Theory Guide Screen -->
+    <string name="theory_screen_title">دليل خط التجميع والمخاطر</string>
+    <string name="theory_screen_subtitle">مرجع أكاديمي · معمارية الحواسيب 2</string>
+    <string name="theory_intro_title">1. ما هو خط التجميع (Pipeline)؟</string>
+    <string name="theory_intro_body">تقنية المعالجة المتسلسلة (Pipeline) تقوم بتقسيم تنفيذ التعليمة إلى مراحل جزئية تعمل بالتوازي على تعليمات مختلفة. في الأنبوب المثالي المكون من k مرحلة ولتنفيذ N تعليمة، يقترب معدل الإنجاز من تعليمة واحدة لكل دورة ساعة، مع تسريع نظري S = (N × k) / (k + N - 1).</string>
+    <string name="theory_models_title">2. نماذج الأنبوب المعتمدة في المقياس</string>
+    <string name="theory_model_4_body">نموذج 4 مراحل (الشابتر الثاني):\n• F (Fetch): جلب التعليمة من الذاكرة.\n• D (Decode): فك التشفير وقراءة المسجلات.\n• E (Execute): الحساب في UAL وحساب العناوين.\n• WB (Write Back): كتابة النتيجة في المسجلات.</string>
+    <string name="theory_model_5_body">نموذج 5 مراحل (تمرين TD4 رقم 6):\n• IF: جلب التعليمة (Instruction Fetch)\n• ID: فك التشفير وقراءة المسجلات\n• EX: التنفيذ الفعلي في UAL\n• MEM: الوصول للذاكرة (قراءة/كتابة)\n• WB: كتابة النتيجة في بنك المسجلات</string>
+    <string name="theory_hazards_heading">3. مخاطر خط التجميع (Aléas)</string>
+    <string name="theory_raw_title">RAW (Read After Write) · تعارض بيانات حقيقي</string>
+    <string name="theory_raw_body">التعليمة اللاحقة تقرأ سجلاً تكتب فيه تعليمة سابقة. في الأنبوب المتسلسل، يُعد RAW المسبب الأساسي لحصول دورات التجميد (فقاعات / Bulles) لأن القيمة مطلوبة في مرحلة Decode/Execute قبل أن تُكتب في WB.</string>
+    <string name="theory_war_title">WAR (Write After Read) · شبه تعارض (Anti-dépendance)</string>
+    <string name="theory_war_body">التعليمة اللاحقة تكتب في سجل تقرأ منه تعليمة سابقة. في الأنابيب المتسلسلة الكلاسيكية، لا يسبب WAR أي تأخير إطلاقاً (0 دورات) لأن القراءة تتم مبكراً في Decode قبل كتابة اللاحقة في WB. ولكنه يفرض قيداً صارماً على الكومبيلر يمنعه من تبديل ترتيب التعليمتين.</string>
+    <string name="theory_waw_title">WAW (Write After Write) · تعارض ناتج (Dépendance de sortie)</string>
+    <string name="theory_waw_body">تعليمتان تكتبان في نفس السجل. يضمن التنفيذ المتسلسل كتابة القيمة الصحيحة في النهاية عند WB (0 دورات تأخير). ولكنه يمنع المترجم من عكس ترتيب الأوامر أثناء إعادة الجدولة.</string>
+    <string name="theory_control_title">مخاطر التحكم (Aléas de Contrôle / انقطاع التسلسل)</string>
+    <string name="theory_control_body">تحدث بسبب تعليمات القفز والتفرع (JMP, JZ, CALL). لا يستطيع المعالج معرفة عنوان التعليمة التالية حتى يتم حساب شرط القفز، مما يفرض تفريغ الأنبوب وعقوبة تأخير (دورتان في نموذج 4 مراحل، و3 دورات في نموذج 5 مراحل حسب TD4 Ex6).</string>
+    <string name="theory_structural_title">مخاطر هيكلية (Aléas de Structure / تعارض الموارد)</string>
+    <string name="theory_structural_body">تحدث عند محاولة مرحلتين استخدام نفس المكون المادي في نفس دورة الساعة (مثل منفذ ذاكرة أو ناقل وحيد مشترك بين جلب الأوامر والبيانات).</string>
+    <string name="theory_solutions_heading">4. أساليب حل وتجاوز المخاطر</string>
+    <string name="theory_sol_stalls_title">التجميد وإدراج الفقاعات (Bulles / NOP)</string>
+    <string name="theory_sol_stalls_body">تقوم وحدة التحكم بتجميد المراحل اللاحقة وإدخال دورات انتظار تعادل تعليمة NOP (لا تفعل شيئاً) حتى تنتهي التعليمة السابقة من كتابة البيانات (الشريحة 27).</string>
+    <string name="theory_sol_fwd_title">الاستباق والتمرير المباشر (Forwarding / Court-circuit)</string>
+    <string name="theory_sol_fwd_body">توصيل مادي مباشر ينقل ناتج UAL من مخرج EX أو MEM مباشرة إلى مدخل EX للتعليمة التالية متجاوزاً WB. ملاحظة: خطر Load-Use يتطلب دوماً دورة تجميد واحدة لأن بيانات الذاكرة لا تتوفر إلا بعد MEM (تمرين TD4 رقم 6).</string>
+    <string name="theory_sol_reorder_title">إعادة ترتيب الأوامر (Réordonnancement)</string>
+    <string name="theory_sol_reorder_body">يقوم المترجم بنقل تعليمات مستقلة لتملأ فراغ التأخير دون المساس بتبعية RAW أو WAR أو WAW، مما يلغي التجميد دون أي تكلفة مادية إضافية (الشريحة 29).</string>
+    <string name="theory_sol_branch_title">التنبؤ بالتفرع (Prédiction de branchement)</string>
+    <string name="theory_sol_branch_body">تخمين اتجاه القفز مسبقاً بطريقة ثابتة (Static) أو ديناميكية (Dynamic) لتجنب تفريغ الأنبوب (الشريحة 33).</string>
+
+    <!-- About Screen -->
+    <string name="about_screen_title">عن تطبيق Pipeline Studio</string>
+    <string name="about_screen_subtitle">أداة هندسية أكاديمية متخصصة</string>
+    <string name="about_dev_heading">المبرمج والمطور</string>
+    <string name="about_dev_name">أمير لباز (Amir Lebbaz)</string>
+    <string name="about_dev_role">طالب إعلام آلي (علوم الحاسوب)</string>
+    <string name="about_dev_univ">جامعة عمار ثليجي – الأغواط</string>
+    <string name="about_dev_dept">كلية العلوم · قسم الإعلام الآلي</string>
+    <string name="about_academic_heading">السياق الأكاديمي</string>
+    <string name="about_academic_course">مقياس: معمارية الحواسيب 2 (Architecture II - UEF31)</string>
+    <string name="about_academic_desc">تم تطوير التطبيق خصيصاً لمساعدة الطلبة على محاكاة خطوط التجميع، كشف مخاطر مسجلات x86، توليد المخططات الزمنية (Chronogram)، وحساب معايير التسريع والأداء بدقة متوافقة مع امتحانات وتمارين الجامعة.</string>
+    <string name="about_specs_heading">المواصفات التقنية</string>
+    <string name="about_specs_version">الإصدار: v1.1</string>
+    <string name="about_specs_offline">يعمل محلياً 100% دون إنترنت · بدون جمع أي بيانات</string>
+    <string name="about_specs_design">نظام التصميم: Ghostly Fog و iDraft Bento</string>
+    <string name="about_links_heading">الروابط والمصدر</string>
+    <string name="about_github_btn">مستودع المشروع على GitHub</string>
+    <string name="about_releases_btn">صفحة الإصدارات وتحميل الـ APK</string>
 </resources>

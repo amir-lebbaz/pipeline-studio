@@ -35,14 +35,30 @@ data class Instruction(
      * Checks if this instruction has a WAR (Write-After-Read) anti-dependency on [earlier].
      */
     fun hasWarDependencyOn(earlier: Instruction): Boolean {
+        if (this.writes.isEmpty() || earlier.reads.isEmpty()) return false
         return this.writes.intersect(earlier.reads).isNotEmpty()
+    }
+
+    /**
+     * Returns the overlapping register family read by [earlier] and written by this instruction.
+     */
+    fun getWarConflictingFamilies(earlier: Instruction): Set<String> {
+        return this.writes.intersect(earlier.reads)
     }
 
     /**
      * Checks if this instruction has a WAW (Write-After-Write) output dependency on [earlier].
      */
     fun hasWawDependencyOn(earlier: Instruction): Boolean {
+        if (this.writes.isEmpty() || earlier.writes.isEmpty()) return false
         return this.writes.intersect(earlier.writes).isNotEmpty()
+    }
+
+    /**
+     * Returns the overlapping register family written by both [earlier] and this instruction.
+     */
+    fun getWawConflictingFamilies(earlier: Instruction): Set<String> {
+        return this.writes.intersect(earlier.writes)
     }
 
     /**

@@ -11,8 +11,8 @@ Computer Science Student, Université Amar Telidji – Laghouat
 
 Get the latest build directly on your Android phone without needing Android Studio or an IDE:
 
-- **Download APK**: [Pipeline Studio v1.0 on GitHub Releases](https://github.com/amir-lebbaz/pipeline-studio/releases/latest)
-- **Direct APK Link**: [PipelineStudio-v1.0.apk](https://github.com/amir-lebbaz/pipeline-studio/releases/download/v1.0/PipelineStudio-v1.0.apk)
+- **Download APK**: [Pipeline Studio v1.1 on GitHub Releases](https://github.com/amir-lebbaz/pipeline-studio/releases/latest)
+- **Direct APK Link**: [PipelineStudio-v1.1.apk](https://github.com/amir-lebbaz/pipeline-studio/releases/download/v1.1/PipelineStudio-v1.1.apk)
 
 The application runs 100% offline, requires zero special permissions, and has an APK size under 5 MB.
 
@@ -38,24 +38,28 @@ Pipeline Studio simulates instruction-level pipelining and hazard resolution for
   - `WB` (Write Back): Register commit.
   - Aligned with TD 4 Exercise 6.
 
-### Hazard Detection and Mitigation
-- **Data Hazards (RAW - Read After Write)**:
+### Complete Hazard Coverage
+- **RAW (Read After Write) · True Data Dependency**:
   - Tracks true dependencies across instructions.
   - Features an x86 sub-register aliasing engine that groups related sub-registers (e.g., `RAX`, `EAX`, `AX`, `AH`, `AL`) into unified physical register families.
-- **Control Hazards**:
-  - Simulates branch penalties and pipeline flushes (3 bubble cycles for 4-stage pipelines).
-- **Hazard Resolution Modes**:
-  - **Stalls Only (`Blocage`)**: Injects bubble cycles until dependent operands are committed at `WB`.
-  - **Data Forwarding (`Anticipation`)**: Bypasses results directly from `E`/`EX` or `MEM` stages. Load-Use dependencies correctly maintain a single stall cycle as established in TD 4 Exercise 6.
-  - **Instruction Reordering (`Reordonnancement`)**: Automatically reschedules independent instructions into pipeline delay slots without altering program semantics (preserving RAW, WAR, WAW, and control boundaries), per Chapter 2 Slide 29.
+- **WAR (Write After Read) · Anti-Dependency**:
+  - Detected and diagnosed in the interface. In standard in-order execution, WAR causes zero stalls because operands are read in Decode before Write Back, but it strictly constrains instruction reordering.
+- **WAW (Write After Write) · Output Dependency**:
+  - Detected and diagnosed. In-order execution preserves the write sequence at Write Back (0 stalls), but compilers are restricted from reordering past WAW boundaries.
+- **Control Hazards (Rupture de séquence)**:
+  - Simulates branch penalties and pipeline flushes (3 bubble cycles for 5-stage, 2 cycles for 4-stage).
+- **Structural Hazards (Conflit de ressources)**:
+  - Highlights resource collision risks (e.g., single memory bus architectures).
 
-### Performance Metrics
-- Total execution cycles ($T_k$) vs unpipelined cycles ($T_1$).
-- Speedup factor:
-  ```text
-  S = T1 / Tk = (N * k) / (k + N - 1 + Stalls)
-  ```
-- Cumulative stall count and hazard diagnostic breakdown.
+### Hazard Resolution Modes
+- **Stalls Only (`Blocage`)**: Injects bubble cycles until dependent operands are committed at `WB`.
+- **Data Forwarding (`Anticipation`)**: Bypasses results directly from `E`/`EX` or `MEM` stages. Load-Use dependencies correctly maintain a single stall cycle as established in TD 4 Exercise 6.
+- **Instruction Reordering (`Réordonnancement`)**: Automatically reschedules independent instructions into pipeline delay slots without altering program semantics (preserving RAW, WAR, WAW, and control boundaries), per Chapter 2 Slide 29.
+
+### Dedicated Screens
+- **Simulator Screen (`MainActivity`)**: Real-time assembly input, model toggles, horizontal chronogram grid, and hazard diagnostics.
+- **Theory & Hazards Guide (`TheoryActivity`)**: Comprehensive in-app reference covering all pipeline stages, hazard types, and hardware/compiler resolution techniques.
+- **Developer Profile & About (`AboutActivity`)**: Student profile (Amir Lebbaz), academic context (Université Amar Telidji – Laghouat), technical specifications, and repository links.
 
 ---
 
@@ -84,8 +88,10 @@ pipeline_studio/
 │   │   │   │   │   ├── Hazard.kt
 │   │   │   │   │   ├── ReorderingEngine.kt
 │   │   │   │   │   └── PipelineSimulator.kt
-│   │   │   │   ├── ui/              # Bento UI activity and chronogram grid
-│   │   │   │   │   └── MainActivity.kt
+│   │   │   │   ├── ui/              # Bento UI activities
+│   │   │   │   │   ├── MainActivity.kt
+│   │   │   │   │   ├── TheoryActivity.kt
+│   │   │   │   │   └── AboutActivity.kt
 │   │   │   │   ├── util/            # Locale management (AR / EN)
 │   │   │   │   │   └── LocaleHelper.kt
 │   │   │   │   └── PipelineStudioApp.kt

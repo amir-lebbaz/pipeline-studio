@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/spectral_white"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_padding">
+
+        <!-- Top Header: Back Button + Title -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="16dp">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_pill_inactive"
+                android:clickable="true"
+                android:contentDescription="@string/btn_back"
+                android:focusable="true"
+                android:padding="8dp"
+                android:src="@drawable/ic_back" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theory_screen_title"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="18sp" />
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.HeroLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theory_screen_subtitle"
+                    android:textColor="@color/stormy_slate"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 1. Hero Concept Card (#242D36) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/bento_gap"
+            android:background="@drawable/bg_bento_dark"
+            android:orientation="vertical"
+            android:padding="@dimen/bento_card_padding">
+
+            <TextView
+                style="@style/TextAppearance.Pipeline.SectionHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/theory_intro_title"
+                android:textColor="@color/spectral_white"
+                android:textSize="16sp" />
+
+            <TextView
+                style="@style/TextAppearance.Pipeline.HeroLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="3dp"
+                android:text="@string/theory_intro_body"
+                android:textColor="@color/spectral_white"
+                android:textSize="13sp" />
+
+            <!-- Speedup Formula Pill -->
+            <TextView
+                style="@style/TextAppearance.Pipeline.MonoCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_pill_accent"
+                android:paddingStart="12dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="6dp"
+                android:text="S = (N × k) / (k + N - 1 + Stalls)"
+                android:textColor="@color/midnight_ink"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- 2. Course Pipeline Models Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/bento_gap"
+            android:background="@drawable/bg_bento_light"
+            android:orientation="vertical"
+            android:padding="@dimen/bento_card_padding">
+
+            <TextView
+                style="@style/TextAppearance.Pipeline.SectionHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/theory_models_title"
+                android:textColor="@color/midnight_ink"
+                android:textSize="16sp" />
+
+            <!-- 4-Stage Tile -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_stat_tile"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/model_4_stage"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.StatLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/theory_model_4_body"
+                    android:textColor="@color/text_primary_light"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- 5-Stage Tile -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_stat_tile"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/model_5_stage"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.StatLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/theory_model_5_body"
+                    android:textColor="@color/text_primary_light"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 3. Hazards Deep-Dive Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/bento_gap"
+            android:background="@drawable/bg_bento_light"
+            android:orientation="vertical"
+            android:padding="@dimen/bento_card_padding">
+
+            <TextView
+                style="@style/TextAppearance.Pipeline.SectionHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/theory_hazards_heading"
+                android:textColor="@color/midnight_ink"
+                android:textSize="16sp" />
+
+            <!-- RAW Tile -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_stat_tile"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theory_raw_title"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.StatLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/theory_raw_body"
+                    android:textColor="@color/text_primary_light"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- WAR Tile -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_stat_tile"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theory_war_title"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.StatLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/theory_war_body"
+                    android:textColor="@color/text_primary_light"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- WAW Tile -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_stat_tile"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theory_waw_title"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.StatLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/theory_waw_body"
+                    android:textColor="@color/text_primary_light"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Control Tile -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_stat_tile"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theory_control_title"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.StatLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/theory_control_body"
+                    android:textColor="@color/text_primary_light"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Structural Tile -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_stat_tile"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theory_structural_title"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.StatLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/theory_structural_body"
+                    android:textColor="@color/text_primary_light"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 4. Hazard Solutions Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/bento_gap"
+            android:background="@drawable/bg_bento_light"
+            android:orientation="vertical"
+            android:padding="@dimen/bento_card_padding">
+
+            <TextView
+                style="@style/TextAppearance.Pipeline.SectionHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/theory_solutions_heading"
+                android:textColor="@color/midnight_ink"
+                android:textSize="16sp" />
+
+            <!-- Stalls Tile -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_stat_tile"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theory_sol_stalls_title"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.StatLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/theory_sol_stalls_body"
+                    android:textColor="@color/text_primary_light"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Forwarding Tile -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_stat_tile"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theory_sol_fwd_title"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.StatLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/theory_sol_fwd_body"
+                    android:textColor="@color/text_primary_light"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Reordering Tile -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_stat_tile"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theory_sol_reorder_title"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.StatLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/theory_sol_reorder_body"
+                    android:textColor="@color/text_primary_light"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Branch Prediction Tile -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_stat_tile"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theory_sol_branch_title"
+                    android:textColor="@color/midnight_ink"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/TextAppearance.Pipeline.StatLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/theory_sol_branch_body"
+                    android:textColor="@color/text_primary_light"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

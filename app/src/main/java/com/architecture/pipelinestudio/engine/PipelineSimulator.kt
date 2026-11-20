@@ -104,7 +104,6 @@ object PipelineSimulator {
 
             // Check if prior instruction was a branch (Control Hazard / Rupture)
             if (i > 0 && instructions[i - 1].isBranch) {
-                // Branch penalty in 4-stage is 2 cycles (resolved at E)
                 val branchPenalty = 2
                 hazards.add(
                     Hazard(
@@ -113,7 +112,7 @@ object PipelineSimulator {
                         targetInstruction = inst,
                         registerFamily = "IP/PC",
                         stallCycles = branchPenalty,
-                        descriptionEn = "Control Hazard (Branch Rupture): Flush and 2 penalty cycles",
+                        descriptionEn = "Control Hazard (Branch Rupture): Pipeline flush with 2 penalty cycles",
                         descriptionAr = "خطر تحكم (انقطاع تسلسل القفز): تفريغ الأنبوب ودورتي تأخير (2 cycles de pénalité)"
                     )
                 )
@@ -143,16 +142,13 @@ object PipelineSimulator {
                     conflictingProducer = producer
 
                     if (hazardMode == HazardMode.FORWARDING) {
-                        // Forwarding from E to E
                         val producerExecCycle = executeCycleMap[p] ?: 0
-                        // inst needs operand at E stage (which would normally be decodeCycle + 1)
                         val normalExecCycle = decodeCycle + 1
                         val diff = producerExecCycle - normalExecCycle + 1
                         if (diff > 0) {
                             stallsNeeded = maxOf(stallsNeeded, diff)
                         }
                     } else {
-                        // Stalls Only: wait until producer WB completes
                         val producerWbCycle = writebackCycleMap[p] ?: 0
                         val normalExecCycle = decodeCycle + 1
                         val diff = producerWbCycle - normalExecCycle + 1
@@ -174,7 +170,7 @@ object PipelineSimulator {
                         stallCycles = stallsNeeded,
                         forwardingSaves = forwardingSaved,
                         descriptionEn = "RAW Data Hazard on register $conflictingFamily between I${conflictingProducer.id} and I${inst.id}",
-                        descriptionAr = "خطر بيانات (RAW) على السجل $conflictingFamily بين التعليمة I${conflictingProducer.id} و I${inst.id}"
+                        descriptionAr = "خطر بيانات حقيقي (RAW) على السجل $conflictingFamily بين التعليمة I${conflictingProducer.id} و I${inst.id}"
                     )
                 )
 
@@ -183,6 +179,41 @@ object PipelineSimulator {
                     stageMap[decodeCycle] = CellExecution(decodeCycle, PipelineStage.STALL, isStall = true)
                     decodeCycle++
                     totalStalls++
+                }
+            }
+
+            // Check WAR and WAW dependencies (Informational / Reordering Constraints)
+            for (p in 0 until i) {
+                val earlier = instructions[p]
+                if (inst.hasWarDependencyOn(earlier)) {
+                    val families = inst.getWarConflictingFamilies(earlier)
+                    val familyName = RegisterAlias.familyDisplayName(families.first())
+                    hazards.add(
+                        Hazard(
+                            type = HazardType.WAR_DATA,
+                            sourceInstruction = earlier,
+                            targetInstruction = inst,
+                            registerFamily = familyName,
+                            stallCycles = 0,
+                            descriptionEn = "WAR Anti-dependency on $familyName (I${earlier.id} reads, I${inst.id} writes). In-order pipeline is naturally immune (0 stalls), but restricts reordering.",
+                            descriptionAr = "شبه تعارض (Anti-dépendance / WAR) على السجل $familyName: I${earlier.id} تقرأ و I${inst.id} تكتب. محمي طبيعياً في الأنبوب المتسلسل (بدون تجميد)، لكنه يقيد إعادة الترتيب."
+                        )
+                    )
+                }
+                if (inst.hasWawDependencyOn(earlier)) {
+                    val families = inst.getWawConflictingFamilies(earlier)
+                    val familyName = RegisterAlias.familyDisplayName(families.first())
+                    hazards.add(
+                        Hazard(
+                            type = HazardType.WAW_DATA,
+                            sourceInstruction = earlier,
+                            targetInstruction = inst,
+                            registerFamily = familyName,
+                            stallCycles = 0,
+                            descriptionEn = "WAW Output dependency on $familyName (both write). Write order preserved in-order at WB (0 stalls), but restricts reordering.",
+                            descriptionAr = "تعارض ناتج (Dépendance de sortie / WAW) على السجل $familyName: كلاهما يكتب. ترتيب الكتابة محفوظ بالتسلسل في مرحلة WB (بدون تجميد)، لكنه يقيد إعادة الترتيب."
+                        )
+                    )
                 }
             }
 
@@ -245,14 +276,13 @@ object PipelineSimulator {
         val schedules = mutableListOf<InstructionSchedule>()
         val hazards = mutableListOf<Hazard>()
 
+        var currentCycle = 1
         var totalStalls = 0
 
-        // Maps instruction index -> cycle where WB completed
-        val wbCycleMap = mutableMapOf<Int, Int>()
-        // Maps instruction index -> cycle where MEM completed
-        val memCycleMap = mutableMapOf<Int, Int>()
-        // Maps instruction index -> cycle where EX completed
+        // Maps instruction index -> cycle where its EX, MEM, WB completed
         val exCycleMap = mutableMapOf<Int, Int>()
+        val memCycleMap = mutableMapOf<Int, Int>()
+        val wbCycleMap = mutableMapOf<Int, Int>()
 
         for (i in instructions.indices) {
             val inst = instructions[i]
@@ -260,18 +290,18 @@ object PipelineSimulator {
 
             var fetchCycle = if (i == 0) 1 else (schedules[i - 1].stages.values.first { it.stage == PipelineStage.FETCH_5 || it.stage == PipelineStage.STALL }.cycle + 1)
 
-            // Branch control hazard (TD 4 Ex 6: 3 penalty cycles for mispredicted branch)
+            // Branch Penalty in 5-stage is 3 cycles (per TD 4 Ex 6)
             if (i > 0 && instructions[i - 1].isBranch) {
-                val branchPenalty = 3 // Per TD 4 Ex 6 Question 2: "Un saut mal prédit coûte 3 cycles de pénalité"
+                val branchPenalty = 3
                 hazards.add(
                     Hazard(
                         type = HazardType.CONTROL_BRANCH,
                         sourceInstruction = instructions[i - 1],
                         targetInstruction = inst,
-                        registerFamily = "RIP/PC",
+                        registerFamily = "RIP/EIP",
                         stallCycles = branchPenalty,
-                        descriptionEn = "Control Hazard: Branch penalty of 3 cycles (TD4 Ex6)",
-                        descriptionAr = "خطر تحكم: ضريبة القفز 3 دورات تأخير (حسب تمرين TD4)"
+                        descriptionEn = "Branch penalty: 3 penalty cycles per TD 4 Exercise 6",
+                        descriptionAr = "عقوبة تفرع القفز: 3 دورات تأخير حسب تمرين TD 4 رقم 6"
                     )
                 )
                 for (b in 0 until branchPenalty) {
@@ -303,21 +333,17 @@ object PipelineSimulator {
 
                     if (hazardMode == HazardMode.FORWARDING) {
                         if (producer.isMemoryLoad) {
-                            // Load-Use Hazard: Value available at end of MEM (memCycleMap[p])
-                            // Consumer needs it at EX (which is idCycle + 1)
                             val producerMemCycle = memCycleMap[p] ?: (idCycle + 2)
                             val targetExCycle = idCycle + 1
                             val diff = producerMemCycle - targetExCycle + 1
                             if (diff > 0) stallsNeeded = maxOf(stallsNeeded, diff)
                         } else {
-                            // ALU to ALU: Forward from EX to EX -> 0 stalls needed
                             val producerExCycle = exCycleMap[p] ?: idCycle
                             val targetExCycle = idCycle + 1
                             val diff = producerExCycle - targetExCycle + 1
                             if (diff > 0) stallsNeeded = maxOf(stallsNeeded, diff)
                         }
                     } else {
-                        // Stalls Only: must wait until producer WB completes (wbCycleMap[p])
                         val producerWbCycle = wbCycleMap[p] ?: (idCycle + 3)
                         val targetExCycle = idCycle + 1
                         val diff = producerWbCycle - targetExCycle + 1
@@ -356,6 +382,41 @@ object PipelineSimulator {
                 }
             }
 
+            // Check WAR and WAW dependencies
+            for (p in 0 until i) {
+                val earlier = instructions[p]
+                if (inst.hasWarDependencyOn(earlier)) {
+                    val families = inst.getWarConflictingFamilies(earlier)
+                    val familyName = RegisterAlias.familyDisplayName(families.first())
+                    hazards.add(
+                        Hazard(
+                            type = HazardType.WAR_DATA,
+                            sourceInstruction = earlier,
+                            targetInstruction = inst,
+                            registerFamily = familyName,
+                            stallCycles = 0,
+                            descriptionEn = "WAR Anti-dependency on $familyName (I${earlier.id} reads, I${inst.id} writes). In-order pipeline is naturally immune (0 stalls), but restricts reordering.",
+                            descriptionAr = "شبه تعارض (Anti-dépendance / WAR) على السجل $familyName: I${earlier.id} تقرأ و I${inst.id} تكتب. محمي طبيعياً في الأنبوب المتسلسل (بدون تجميد)، لكنه يقيد إعادة الترتيب."
+                        )
+                    )
+                }
+                if (inst.hasWawDependencyOn(earlier)) {
+                    val families = inst.getWawConflictingFamilies(earlier)
+                    val familyName = RegisterAlias.familyDisplayName(families.first())
+                    hazards.add(
+                        Hazard(
+                            type = HazardType.WAW_DATA,
+                            sourceInstruction = earlier,
+                            targetInstruction = inst,
+                            registerFamily = familyName,
+                            stallCycles = 0,
+                            descriptionEn = "WAW Output dependency on $familyName (both write). Write order preserved in-order at WB (0 stalls), but restricts reordering.",
+                            descriptionAr = "تعارض ناتج (Dépendance de sortie / WAW) على السجل $familyName: كلاهما يكتب. تسلسل الكتابة محفوظ في مرحلة WB (بدون تجميد)، لكنه يقيد إعادة الترتيب."
+                        )
+                    )
+                }
+            }
+
             stageMap[idCycle] = CellExecution(idCycle, PipelineStage.DECODE_5)
 
             // EX Stage
@@ -374,6 +435,7 @@ object PipelineSimulator {
             wbCycleMap[i] = wbCycle
 
             schedules.add(InstructionSchedule(inst, stageMap))
+            currentCycle = maxOf(currentCycle, wbCycle)
         }
 
         val totalCycles = schedules.maxOfOrNull { it.stages.keys.maxOrNull() ?: 0 } ?: 0

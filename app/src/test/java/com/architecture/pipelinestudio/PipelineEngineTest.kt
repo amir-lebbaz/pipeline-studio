@@ -145,4 +145,50 @@ class PipelineEngineTest {
         assertEquals(104, idealPipelined)
         assertEquals(4.81, Math.round(speedup * 100.0) / 100.0, 0.05)
     }
+
+    @Test
+    fun testHazardDetection_WARAntiDependency() {
+        // I1 reads AX, I2 writes AX -> WAR (Write After Read)
+        val code = """
+            MOV BX, AX
+            MOV AX, 5
+        """.trimIndent()
+
+        val instructions = Parser.parse(code)
+        assertEquals(2, instructions.size)
+
+        val result = PipelineSimulator.simulate(
+            instructions,
+            PipelineModel.FIVE_STAGE,
+            HazardMode.STALLS_ONLY
+        )
+
+        val warHazards = result.hazards.filter { it.type == HazardType.WAR_DATA }
+        assertEquals(1, warHazards.size)
+        assertEquals("RAX/EAX/AX/AL", warHazards[0].registerFamily)
+        assertEquals(0, warHazards[0].stallCycles) // 0 stalls in an in-order pipeline
+    }
+
+    @Test
+    fun testHazardDetection_WAWOutputDependency() {
+        // Both I1 and I2 write RAX -> WAW (Write After Write)
+        val code = """
+            MOV RAX, 10
+            MOV RAX, 20
+        """.trimIndent()
+
+        val instructions = Parser.parse(code)
+        assertEquals(2, instructions.size)
+
+        val result = PipelineSimulator.simulate(
+            instructions,
+            PipelineModel.FIVE_STAGE,
+            HazardMode.STALLS_ONLY
+        )
+
+        val wawHazards = result.hazards.filter { it.type == HazardType.WAW_DATA }
+        assertEquals(1, wawHazards.size)
+        assertEquals("RAX/EAX/AX/AL", wawHazards[0].registerFamily)
+        assertEquals(0, wawHazards[0].stallCycles) // 0 stalls in an in-order pipeline
+    }
 }

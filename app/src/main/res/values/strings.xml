@@ -3,9 +3,12 @@
     <string name="app_name">Pipeline Studio</string>
     <string name="app_subtitle">Architecture II · Laghouat</string>
 
-    <!-- Top Bar -->
+    <!-- Top Bar & Navigation -->
     <string name="lang_toggle">عربي</string>
     <string name="lang_current">EN</string>
+    <string name="nav_theory">Theory</string>
+    <string name="nav_about">About</string>
+    <string name="btn_back">Back</string>
 
     <!-- Hero Card Metrics -->
     <string name="hero_title">Performance Overview</string>
@@ -46,12 +49,63 @@
     <string name="section_hazards">Hazard Analysis &amp; Diagnostics</string>
     <string name="no_hazards_detected">Zero hazards detected. Ideal pipeline flow achieved.</string>
     <string name="hazard_raw_title">Data Hazard (RAW)</string>
+    <string name="hazard_war_title">WAR Anti-Dependency</string>
+    <string name="hazard_waw_title">WAW Output Dependency</string>
     <string name="hazard_control_title">Control Hazard (Branch)</string>
     <string name="hazard_structural_title">Structural Hazard</string>
+    <string name="badge_in_order_safe">In-Order Safe (0 Stalls)</string>
     <string name="hazard_affected_register">Affected Register: %1$s</string>
     <string name="hazard_between_instructions">Between %1$s and %2$s</string>
     <string name="hazard_stalls_penalty">Penalty: %1$d Stalls (Bulles)</string>
     <string name="hazard_forwarding_saved">Forwarding saved: %1$d cycles</string>
     <string name="reordering_applied_title">Instruction Reordering Applied</string>
     <string name="reordering_applied_desc">Independent instruction %1$s moved ahead to eliminate pipeline stall.</string>
+
+    <!-- Theory Guide Screen -->
+    <string name="theory_screen_title">Pipeline Theory &amp; Hazards</string>
+    <string name="theory_screen_subtitle">Academic Reference · Architecture II</string>
+    <string name="theory_intro_title">1. What is a Pipelined Processor?</string>
+    <string name="theory_intro_body">Instruction pipelining divides instruction execution into discrete sub-steps (stages) executed concurrently. In an ideal pipeline with k stages and N instructions, execution approaches 1 instruction completed per clock cycle, giving a theoretical speedup S = (N × k) / (k + N - 1).</string>
+    <string name="theory_models_title">2. Course Pipeline Models</string>
+    <string name="theory_model_4_body">4-Stage Model (Chapter 2):\n• F (Fetch): Instruction is read from memory.\n• D (Decode): Instruction decoding &amp; register reading.\n• E (Execute): ALU computation &amp; address calculation.\n• WB (Write Back): Result written into register file.</string>
+    <string name="theory_model_5_body">5-Stage Model (TD4 Exercise 6):\n• IF: Instruction Fetch\n• ID: Instruction Decode &amp; Register Read\n• EX: Execution / ALU\n• MEM: Memory Access (Load/Store)\n• WB: Write Back to Register File</string>
+    <string name="theory_hazards_heading">3. Pipeline Hazards (Aléas)</string>
+    <string name="theory_raw_title">RAW (Read After Write) · True Dependency</string>
+    <string name="theory_raw_body">Instruction J reads an operand before instruction I writes it. In an in-order pipeline, RAW is the primary cause of hardware stalls (bulles) because the operand is required in Decode/Execute before Write Back.</string>
+    <string name="theory_war_title">WAR (Write After Read) · Anti-Dependency</string>
+    <string name="theory_war_body">Instruction J writes to a register read by earlier instruction I. In standard in-order pipelines, WAR causes ZERO stalls because I always reads in Decode before J commits at WB. However, WAR strictly constrains instruction reordering (compilers must never swap J before I).</string>
+    <string name="theory_waw_title">WAW (Write After Write) · Output Dependency</string>
+    <string name="theory_waw_body">Both instructions write to the same destination register. In-order execution naturally preserves the write sequence at WB (0 stalls). However, it prevents compilers from inverting instruction order during reordering.</string>
+    <string name="theory_control_title">Control Hazards (Rupture de séquence)</string>
+    <string name="theory_control_body">Caused by branch instructions (JMP, JZ, CALL). The CPU cannot determine the next instruction address until branch resolution, causing pipeline flushes and penalties (2 cycles in 4-stage, 3 cycles in 5-stage per TD4 Ex6).</string>
+    <string name="theory_structural_title">Structural Hazards (Conflit de ressources)</string>
+    <string name="theory_structural_body">Occurs when hardware resources are shared and cannot service multiple stages simultaneously (e.g., single memory port for both instruction fetch and data access).</string>
+    <string name="theory_solutions_heading">4. Hazard Resolution Methods</string>
+    <string name="theory_sol_stalls_title">Stalls (Bulles / NOP Insertion)</string>
+    <string name="theory_sol_stalls_body">Hardware interlock holds dependent stages idle while earlier stages proceed. Electrically equivalent to executing NOP (No Operation) instructions (Chapter 2 Slide 27).</string>
+    <string name="theory_sol_fwd_title">Data Forwarding (Anticipation / Court-circuit)</string>
+    <string name="theory_sol_fwd_body">Hardware multiplexers forward ALU results directly from EX or MEM outputs to the inputs of dependent stages. Notice: Load-Use dependencies still require exactly 1 stall cycle because memory data is only available at MEM stage (TD4 Ex6).</string>
+    <string name="theory_sol_reorder_title">Instruction Reordering (Réordonnancement)</string>
+    <string name="theory_sol_reorder_body">The compiler statically reschedules independent instructions into stall delay slots without altering RAW, WAR, or WAW dependencies, eliminating bubbles at zero hardware cost (Chapter 2 Slide 29).</string>
+    <string name="theory_sol_branch_title">Branch Prediction (Prédiction de branchement)</string>
+    <string name="theory_sol_branch_body">Predicts branch direction statically (at compile time) or dynamically (via branch history tables) to avoid flushing the instruction stream (Chapter 2 Slide 33).</string>
+
+    <!-- About Screen -->
+    <string name="about_screen_title">About Pipeline Studio</string>
+    <string name="about_screen_subtitle">Academic Hardware Engineering Tool</string>
+    <string name="about_dev_heading">Developer</string>
+    <string name="about_dev_name">Amir Lebbaz</string>
+    <string name="about_dev_role">Computer Science Student</string>
+    <string name="about_dev_univ">Université Amar Telidji – Laghouat</string>
+    <string name="about_dev_dept">Faculty of Sciences · Computer Science</string>
+    <string name="about_academic_heading">Course Context</string>
+    <string name="about_academic_course">Architecture des ordinateurs II (UEF31)</string>
+    <string name="about_academic_desc">Engineered specifically to simulate and analyze instruction-level pipelining, x86 register aliasing, cycle chronograms, and hazard resolution techniques aligned with academic examinations and TD series.</string>
+    <string name="about_specs_heading">Specifications</string>
+    <string name="about_specs_version">Version: v1.1</string>
+    <string name="about_specs_offline">100% Offline · Zero Data Collection</string>
+    <string name="about_specs_design">Design System: Ghostly Fog &amp; iDraft Bento</string>
+    <string name="about_links_heading">Links &amp; Source</string>
+    <string name="about_github_btn">GitHub Repository</string>
+    <string name="about_releases_btn">Releases &amp; APK Download</string>
 </resources>
